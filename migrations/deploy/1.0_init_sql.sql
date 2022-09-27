@@ -34,14 +34,6 @@ CREATE TABLE "restaurant" (
 
 );
 
-CREATE TABLE "memento" (
-    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "name" TEXT NOT NULL,
-    "reminder" INT ,
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
-    "updated_at" TIMESTAMPTZ
-);
 CREATE TABLE "tag_restaurant" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "label" text,
@@ -76,12 +68,19 @@ CREATE TABLE "tag_meal" (
 );
 CREATE TABLE "meal_has_tag" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "tag_meal" INT NOT NULL REFERENCES "tag_meal" ("id"),
+    "tag_meal_id" INT NOT NULL REFERENCES "tag_meal" ("id"),
     "meal_id" INT NOT NULL REFERENCES "meal" ("id"),
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
 
-
+CREATE TABLE "memento" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "reminder" INT ,
+    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "updated_at" TIMESTAMPTZ
+);
 
 COMMIT;
