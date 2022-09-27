@@ -1,0 +1,14 @@
+"a user"
+
+type User {
+    id:Int!
+    name:String!
+    firstName:String!
+    email:String!
+    password:String!
+    photo:String
+    token:String!
+    restaurants:[Restaurant!]!
+    createdAt:DateTime!
+    updatedAt:DateTime!
+}

@@ -1,0 +1,17 @@
+# Query va concerner tout ce qui est requête SELECT
+type Query{
+    getAllRestaurants: [Restaurant!]!
+    getRestaurant(id: Int!): Restaurant
+
+    getAllMeals: [Meal!]!
+    getMeal(id: Int!): Meal
+
+    getAllTagRestaurant: [Tag_restaurant!]!
+    getTagRestaurant(id: Int!): Restaurant
+
+    getAllTagMeal: [Tag_meal!]!
+    getTagMeal(id: Int!): Tag_meal
+
+    getAllMemento: [Memento!]!
+    getTagMemento(id: Int!): Memento
+}
