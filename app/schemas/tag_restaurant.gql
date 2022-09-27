@@ -1,0 +1,6 @@
+"a tag_restaurant"
+type Tag_restaurant {
+    id:Int!
+    label:String
+    restaurants:[Restaurant!]!
+}

@@ -1,0 +1,9 @@
+"a memento"
+type Memento {
+    id:Int!
+    name:String!
+    reminder:Int!
+    restaurants:[Restaurant]!
+    createdAt:DateTime!
+    updatedAt:DateTime!
+}

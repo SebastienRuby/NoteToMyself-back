@@ -1,0 +1,6 @@
+"a tag_meal"
+type Tag_meal {
+    id:Int!
+    label:String
+    meals:[Meal!]!
+}

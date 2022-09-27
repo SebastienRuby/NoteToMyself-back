@@ -1,0 +1,16 @@
+"a restaurant"
+type Restaurant {
+    id:Int!
+    name:String!
+    slug:String
+    location:String!
+    favorite:BOOLEAN
+    comment:String
+    token:String
+    users:[User!]!
+    meals:[Meal!]!
+    mementos:[Memento!]!
+    tag_restaurants:[Tag_Restaurant!]!
+    createdAt:DateTime!
+    updatedAt:DateTime!
+}

@@ -1,0 +1,11 @@
+"a meal"
+type Meal {
+    id:Int!
+    name:String!
+    slug:String
+    photo:String
+    favorite:BOOLEAN
+    review:String
+    restaurants:[Restaurant!]!
+    tag_meal:[Tag_meal!]!
+}
