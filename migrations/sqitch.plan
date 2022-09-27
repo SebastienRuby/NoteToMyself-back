@@ -1,4 +1,4 @@
 %syntax-version=1.0.0
 %project=note_to_my_self
 
-1.0_init_sql 2022-09-26T08:58:04Z ,,, <edrago@edrago> # add BDD
+init 2022-09-21T10:18:50Z ,,, <edrago@DESKTOP-CP1E1UM> # initialisation de la bdd
