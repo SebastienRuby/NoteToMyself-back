@@ -16,7 +16,7 @@ CREATE TABLE "user" (
     "email" email NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "photo" TEXT, 
-    "token" TEXT,
+    "token" TEXT NOT NULL ,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 
