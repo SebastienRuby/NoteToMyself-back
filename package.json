@@ -1,0 +1,25 @@
+{
+  "name": "projet-03-note-to-myself-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "express-session": "^1.17.3",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/O-clock-Flamel/projet-03-note-to-myself-back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/O-clock-Flamel/projet-03-note-to-myself-back/issues"
+  },
+  "homepage": "https://github.com/O-clock-Flamel/projet-03-note-to-myself-back#readme"
+}
