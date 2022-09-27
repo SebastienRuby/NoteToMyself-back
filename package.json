@@ -5,13 +5,10 @@
   "main": "index.js",
   "dependencies": {
     "apollo-server": "^3.10.2",
-<<<<<<< HEAD
     "apollo-server-express": "^3.10.2",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
-=======
->>>>>>> 3fb31d2a7672933c2a6f45aaf5a3adc4b5bf56ab
     "graphql": "^16.6.0"
   },
   "scripts": {
