@@ -24,6 +24,23 @@ function pgQuoteEscape(row) {
   });
   return newRow;
 }
+function string_to_slug (str) {
+  str = str.replace(/^\s+|\s+$/g, ''); // trim
+  str = str.toLowerCase();
+
+  // remove accents, swap ñ for n, etc
+  var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+  var to   = "aaaaeeeeiiiioooouuuunc------";
+  for (var i=0, l=from.length ; i<l ; i++) {
+      str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+  }
+
+  str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+      .replace(/\s+/g, '-') // collapse whitespace and replace by -
+      .replace(/-+/g, '-'); // collapse dashes
+
+  return str;
+}
 
 // Fonction de géneration des utilisateur
 function generateUsers(nbUsers) {
@@ -111,9 +128,11 @@ async function generateRestaurant(nbResto, userId) {
   for (let i = 0; i < nbResto; i += 1) {
     let name = `Chez ${faker.name.firstName()} ${faker.name.suffix()}`;
     let location = `${faker.address.buildingNumber()} ${faker.address.street()}, ${faker.address.city()} ${faker.address.zipCode()} France`;
+    let slug = string_to_slug(name)
 
     const restaurant = {
       name,
+      slug,
       comment: faker.company.catchPhrase(),
       favorite: faker.datatype.boolean(),
       user_id:
@@ -131,6 +150,7 @@ async function insertRestaurant(restaurants) {
     const newRestaurant = pgQuoteEscape(restaurant);
     return `(
                '${newRestaurant.name}',
+               '${newRestaurant.slug}',
                '${newRestaurant.comment}',
                ${newRestaurant.favorite},
                ${newRestaurant.user_id},
@@ -142,6 +162,7 @@ async function insertRestaurant(restaurants) {
            INSERT INTO "restaurant"
            (
                "name",
+               "slug",
                "comment",
                "favorite",
                "user_id",
@@ -250,9 +271,11 @@ async function generateMeal(nbMeal, restaurantId) {
   const meals = [];
   for (let i = 0; i < nbMeal; i += 1) {
     let name = `Steak de ${faker.animal.type()}`;
+    let slug = string_to_slug(name)
 
     const meal = {
       name,
+      slug,
       photo: faker.image.food(),
       favorite: faker.datatype.boolean(),
       review: faker.company.catchPhrase(),
@@ -272,6 +295,7 @@ async function insertMeal(meals) {
     const newMeal = pgQuoteEscape(meal);
     return `(
                '${newMeal.name}',
+               '${newMeal.slug}',
                '${newMeal.photo}',
                ${newMeal.favorite},
                '${newMeal.review}',
@@ -283,6 +307,7 @@ async function insertMeal(meals) {
            INSERT INTO "meal"
            (
                "name",
+               "slug",
                "photo",
                "favorite",
                "review",
@@ -397,13 +422,12 @@ async function generateMemento(nbMemento, restaurantId) {
 // Insertion des mementos générés dans la BDD
 async function insertMemento(mementos) {
   await db.query('TRUNCATE TABLE "memento" RESTART IDENTITY CASCADE');
-  Array.from(mementos)
   const mementoValues = mementos.map((memento) => {
     const newMemento = pgQuoteEscape(memento);
     return `(
                '${newMemento.name}',
                ${newMemento.reminder},
-               ${newMemento.restaurantId},
+               ${newMemento.restaurantId}
            )`;
   });
 
@@ -412,7 +436,7 @@ async function insertMemento(mementos) {
            (
                "name",
                "reminder",
-               "restaurant_id",
+               "restaurant_id"
            )
            VALUES
            ${mementoValues}
@@ -490,7 +514,7 @@ async function insertMemento(mementos) {
    * Génération des mementos fake
    * Ajout de ces mementos en BDD
    */
-  const mementos = generateMemento(NB_MEMENTOS, restaurantIds);
+  const mementos = await generateMemento(NB_MEMENTOS, restaurantIds);
   const insertedMemento = await insertMemento(mementos);
   debug(`${insertedMemento.length} tag_meal inserted`);
 

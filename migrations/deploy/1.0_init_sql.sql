@@ -1,3 +1,4 @@
+-- Active: 1663948777343@@127.0.0.1@5432@noteToMyself@public
 -- SQLBook: Code
 --- Deploy note_to_my_self:1.0_init_sql from pg
 
