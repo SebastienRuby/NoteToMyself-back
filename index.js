@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const router = require('./app/router/router');
 const session = require('express-session');
@@ -16,7 +17,7 @@ app.use(express.static(path.join(__dirname, './assets')));
 // on rajoute à la gestion des POST -> body
 app.use(express.urlencoded({ extended: true }));
 app.use(cors('*'));
-
+app.use(bodyParser.json());
 app.use(session({
   saveUninitialized: true, // Je crée une session vide même si l'utilisateur n'est pas connecté
   resave: true, // Je ré-enregistre les cookies à chaque requête
