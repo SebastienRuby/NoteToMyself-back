@@ -71,7 +71,7 @@ async function insertUsers(users) {
   const queryStr = `
       INSERT INTO "user"
     (
-      "firstname",
+      "username",
       "email",
       "password",
       "photo"
