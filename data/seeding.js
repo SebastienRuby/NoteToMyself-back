@@ -2,7 +2,7 @@ require('dotenv').config();
 const { faker } = require("@faker-js/faker");
 const debug = require("debug")("seeding");
 
-const db = require("../app/db/database");
+const db = require("../app/db/pg");
 debug.queryCount = 0;
 
 faker.locale = "fr";
