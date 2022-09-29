@@ -3,15 +3,14 @@ const sequelize = require('../db/database');
 
 class User extends Sequelize.Model {
 	get fullname() {
-		return this.firstname + ' ' + this.lastname;
+		return this.username;
 	}
 }
 
 User.init({
     email: Sequelize.STRING,
     password: Sequelize.STRING,
-    firstname: Sequelize.STRING,
-    lastname: Sequelize.STRING,
+    username: Sequelize.STRING,
     photo: Sequelize.STRING,
 	}, {
     sequelize,

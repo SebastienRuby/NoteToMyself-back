@@ -27,5 +27,5 @@ app.use(userMiddleware);
 app.use(router);
 
 app.listen(PORT, _ => {
-   console.log(`http://localhost:${PORT}`);
+   console.log(`http://sebastienruby-server.eddi.cloud`);
 });
