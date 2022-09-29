@@ -82,7 +82,7 @@ async function insertUsers(users) {
       VALUES
     (
       'Ulrich',
-      'Vallaux',
+      'Vallaud',
       'ulrich@oclock.io',
       '$2b$10$h4Dh2fRGAf4YdC.Cqg1yleq41QHmG61B76THHCp03SgMEizvZlscy',
       'https://avatars.githubusercontent.com/u/36332744?v=4'
