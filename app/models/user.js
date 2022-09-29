@@ -1,0 +1,21 @@
+const Sequelize = require('sequelize');
+const sequelize = require('../db/database');
+
+class User extends Sequelize.Model {
+	get fullname() {
+		return this.firstname + ' ' + this.lastname;
+	}
+}
+
+User.init({
+    email: Sequelize.STRING,
+    password: Sequelize.STRING,
+    firstname: Sequelize.STRING,
+    lastname: Sequelize.STRING,
+    photo: Sequelize.STRING,
+	}, {
+    sequelize,
+    tableName: "user"
+  })
+
+	module.exports = User;
