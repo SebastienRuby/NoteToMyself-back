@@ -59,7 +59,7 @@ const userController = {
 
         res.json({
           isLogged: true,
-          username: user.firstname,
+          username: user.username,
           // token: jsonwebtoken.sign(jwtContent, jwtSecret, jwtOptions),
         });
       }
