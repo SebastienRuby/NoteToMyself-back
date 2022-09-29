@@ -47,8 +47,7 @@ function generateUsers(nbUsers) {
   const users = [];
   for (let i = 0; i < nbUsers; i += 1) {
     const user = {
-      firstname: faker.name.firstName(),
-      lastname: faker.name.lastName(),
+      username: faker.name.firstName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
       photo: faker.internet.avatar()
@@ -62,8 +61,7 @@ async function insertUsers(users) {
   await db.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
   const userValues = users.map(
     (user) => `(
-      '${user.firstname}',
-      '${user.lastname}',
+      '${user.username}',
       '${user.email}',
       '${user.password}',
       '${user.photo}'
@@ -74,7 +72,6 @@ async function insertUsers(users) {
       INSERT INTO "user"
     (
       "firstname",
-      "lastname",
       "email",
       "password",
       "photo"
@@ -82,35 +79,30 @@ async function insertUsers(users) {
       VALUES
     (
       'Ulrich',
-      'Vallaud',
       'ulrich@oclock.io',
       '$2b$10$h4Dh2fRGAf4YdC.Cqg1yleq41QHmG61B76THHCp03SgMEizvZlscy',
       'https://avatars.githubusercontent.com/u/36332744?v=4'
     ),-- superpass
     (
       'Alexis',
-      'Piotrowicz',
       'alexis@oclock.io',
       '$2b$10$h4Dh2fRGAf4YdC.Cqg1yleq41QHmG61B76THHCp03SgMEizvZlscy',
       'https://avatars.githubusercontent.com/u/74763572?v=4'
     ), -- superpass
     (
       'Yann',
-      'Creach',
       'yann@oclock.io',
       '$2b$10$h4Dh2fRGAf4YdC.Cqg1yleq41QHmG61B76THHCp03SgMEizvZlscy',
       'https://avatars.githubusercontent.com/u/17363842?v=4'
     ), -- superpass
     (
       'Jonas',
-      'Millet',
       'jonas@oclock.io',
       '$2b$10$h4Dh2fRGAf4YdC.Cqg1yleq41QHmG61B76THHCp03SgMEizvZlscy',
       'https://avatars.githubusercontent.com/u/12894353?v=4'
     ), -- superpass
     (
       'Sebastien',
-      'Ruby',
       'sebastien@oclock.io',
       '$2b$10$h4Dh2fRGAf4YdC.Cqg1yleq41QHmG61B76THHCp03SgMEizvZlscy',
       'https://avatars.githubusercontent.com/u/87674596?v=4'
