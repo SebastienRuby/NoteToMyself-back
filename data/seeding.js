@@ -511,4 +511,5 @@ async function insertMemento(mementos) {
   debug(`${insertedMemento.length} tag_meal inserted`);
 
   db.originalClient.end();
+
 })();

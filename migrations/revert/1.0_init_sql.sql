@@ -1,5 +1,3 @@
--- Revert note_to_my_self:1.0_init_sql from pg
-
 BEGIN;
 
 DROP TABLE IF EXISTS 
