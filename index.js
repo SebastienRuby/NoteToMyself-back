@@ -4,7 +4,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const router = require('./app/router/router');
+const router = require('./app/router');
 const session = require('express-session');
 const userMiddleware = require('./app/middleware/userMiddleware');
 
@@ -30,5 +30,5 @@ app.use(userMiddleware);
 app.use(router);
 
 app.listen(PORT, _ => {
-  console.log('http://sebastienruby-server.eddi.cloud');
+  console.log('Server started on port', PORT);
 });
