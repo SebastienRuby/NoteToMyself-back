@@ -11,8 +11,7 @@ CHECK(
 
 CREATE TABLE "user" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "firstname" TEXT NOT NULL,
-    "lastname" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
     "email" email NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "photo" TEXT, 
@@ -78,6 +77,7 @@ CREATE TABLE "meal_has_tag" (
 CREATE TABLE "memento" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
+    "content" TEXT, 
     "reminder" INT ,
     "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
