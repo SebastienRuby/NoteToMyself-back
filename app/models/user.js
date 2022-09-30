@@ -2,18 +2,19 @@ const client = require('../db/pg'); // import the client
 const bcrypt = require('bcrypt'); // import bcrypt
 
 class User {
-  constructor() {
-    this.username = username;
-    this.password = password;
-    this.email = email;
-    this.photo = photo;
-    this.token = token;
+  constructor(obj) {
+    this.id = obj.id;
+    this.username = obj.username;
+    this.password = obj.password;
+    this.email = obj.email;
+    this.token = obj.token;
+    this.photo = obj.photo;
   }
   //create username and password
   static async create(username, password, email) {
     const passwordcrypt = await bcrypt.hash(password, 10);
     const result  = await client.query(
-      'INSERT INTO public."user" (username, password, email) VALUES ($1, $2, $3)',
+      'INSERT INTO public."user" (username, password, email) VALUES ($1, $2, $3) RETURNING *',
       [username, passwordcrypt, email]
     );
    const user = new User(result.rows[0]);
@@ -25,12 +26,11 @@ class User {
       'SELECT * FROM public."user" WHERE email=$1',
       [email]
     );
-    if(result?.rows.length > 0){
-            
-      return new User(result.rows[0]);
+    if(result.rows.length > 0){
+            return new User(result.rows[0]);
     }
-  else{
-      return;
+    else{
+        return null;
     }
   }
 

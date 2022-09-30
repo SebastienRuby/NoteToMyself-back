@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const mainController = require('./controller/mainController');
-const controllerUser = require('./controller/controllerUser');
+const mainController = require('../controller/mainController');
+const controllerUser = require('../controller/controllerUser');
 
 
 router.get('/', mainController.homePage);

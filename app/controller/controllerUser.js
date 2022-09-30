@@ -1,20 +1,34 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const client = require('../db/pg');
 
 const controllerUser = {
     async doLogin(req, res) {
         try {
             const user = await User.findUserByEmail(req.body.email);
-            if(req.session.user === user && user.checkPassword(req.body.password)){
-                res.json({isLogged: true, user: req.session.user});
+            if (user) {
+                if (user.checkPassword(req.body.password)) {
+                    const token = jwt.sign({
+                        userId: user.id,
+                        username: user.username,
+                        email: user.email
+                        }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_DURING});
+                    await client.query(
+                        'UPDATE public."user" SET token=$1 WHERE id=$2 RETURNING *',
+                        [token, user.id]
+                    );
+                    res.status(200).json({ token , username :user.username});
+                } else {
+                    res.status(401).json({ message: 'Invalid password' });
+                }
+            } else {
+                res.status(401).json({ message: 'Invalid email' });
             }
-            else{
-                res.json({isLogged: false, user: null});
-            }
-        } catch (err) {
-            console.error(err);
-            res.send(err.message).status(401);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
     },
+    
     async doSignUp(req, res) {
         try {
             const user = await User.findUserByEmail(req.body.email);
@@ -23,8 +37,7 @@ const controllerUser = {
             }
             else{
                 const newUser = await User.create(req.body.username, req.body.password, req.body.email);
-                newUser = req.session.user;
-                res.json({isLogged: true, user: req.session.user});
+                res.json({isLogged: true, newUser: newUser.username});
             }
         } catch (err) {
             console.error(err);
