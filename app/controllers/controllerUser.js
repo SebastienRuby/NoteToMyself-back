@@ -1,11 +1,14 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const client = require('../db/pg');
 
 const controllerUser = {
+    // Method: POST
+    // Path: /login
+    // Description: login a user
     async doLogin(req, res) {
         try {
             const user = await User.findUserByEmail(req.body.email);
+            console.log(req.body.email)
             if (user) {
                 if (user.checkPassword(req.body.password)) {
                     const token = jwt.sign({
@@ -13,11 +16,7 @@ const controllerUser = {
                         username: user.username,
                         email: user.email
                         }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_DURING});
-                    await client.query(
-                        'UPDATE public."user" SET token=$1 WHERE id=$2 RETURNING *',
-                        [token, user.id]
-                    );
-                    res.status(200).json({ token , username :user.username});
+                    res.status(200).json({token: token, username: user.username, email: user.email});
                 } else {
                     res.status(401).json({ message: 'Invalid password' });
                 }
@@ -28,7 +27,9 @@ const controllerUser = {
             res.status(500).json({ message: error.message });
         }
     },
-    
+    // Method: POST
+    // Path: /signup
+    // Description: Create a user
     async doSignUp(req, res) {
         try {
             const user = await User.findUserByEmail(req.body.email);
@@ -36,9 +37,16 @@ const controllerUser = {
                 res.status(401).json({message: `L'utilisateur ${req.body.email} existe déjà`});
             }
             else{
-                const newUser = await User.create(req.body.username, req.body.password, req.body.email);
-                res.json({isLogged: true, newUser: newUser.username});
+                await User.create(req.body.username, req.body.password, req.body.email);                
+                const newUserLogged = await User.findUserByEmail(req.body.email);
+                const token = jwt.sign({
+                    userId: newUserLogged.id,
+                    username: newUserLogged.username,
+                    email: newUserLogged.email
+                    }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_DURING});
+                res.status(200).json({ token , username :newUserLogged.username});
             }
+
         } catch (err) {
             console.error(err);
             res.send(err.message).status(401);
@@ -46,3 +54,4 @@ const controllerUser = {
     }
 }
 module.exports = controllerUser;
+

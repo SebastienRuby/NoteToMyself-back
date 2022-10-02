@@ -25,7 +25,7 @@ CREATE TABLE "restaurant" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
     "slug" TEXT,
-    "location" TEXT NOT NULL,
+    "location" TEXT,
     "favorite" BOOLEAN ,
     "comment" TEXT,
     "user_id" INT NOT NULL REFERENCES "user" ("id"), 
