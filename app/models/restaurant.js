@@ -5,7 +5,14 @@ const restaurants = {
     // Path: /restaurants
     // Description: Get all restaurants
     getAll: (req, res) => {
-        const query = 'SELECT * from restaurant where user_id = $1' // query to get all restaurant
+        const query = 
+        `SELECT *,
+        tag_restaurant.id AS tagRestaurant_id,
+        tag_restaurant.label AS tagRestaurant_label
+        FROM restaurant
+        JOIN restaurant_has_tag ON restaurant_id = restaurant.id
+        JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id 
+        JOIN user_id = $1 `// query to get all restaurant
        
         client.query(query ,[req.headers.userid])
             .then((result) => {
@@ -21,7 +28,22 @@ const restaurants = {
     // Path: /restaurant
     // Description: Get one restaurant
     getOne: (req, res) => {
-        const query = 'SELECT restaurant.name as restaurant_name, restaurant.slug as restaurant_slug,restaurant.location as restaurant_location,restaurant.favorite as restaurant_favorite,tag_restaurant.id as tagRestaurant_id,tag_restaurant.label as tagRestaurant_label,meal.id as meal_id,meal.name as meal_name,meal.slug as meal_slug,meal.favorite as meal_favorite,meal.created_at as meal_time,tag_meal.label as tag_meal From restaurant Join restaurant_has_tag on restaurant_id = restaurant.id Join tag_restaurant on tag_restaurant.id = tag_restaurant_id Join meal on meal_restaurant_id = restaurant.id Join meal_has_tag on meal_id = meal.id Join tag_meal on tag_meal.id = tag_meal_id where restaurant_id = $1' // query to get one restaurant
+        const query = `SELECT *,
+        tag_restaurant.id AS tagRestaurant_id,
+        tag_restaurant.label AS tagRestaurant_label,
+        meal.id AS meal_id,
+        meal.name AS meal_name,
+        meal.slug AS meal_slug,
+        meal.favorite AS meal_favorite,
+        meal.created_at AS meal_time,
+        tag_meal.label AS tag_meal
+        FROM restaurant
+        JOIN restaurant_has_tag ON restaurant_id = restaurant.id
+        JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id
+        JOIN meal ON meal_restaurant_id = restaurant.id
+        JOIN meal_has_tag ON meal_id = meal.id
+        JOIN tag_meal ON tag_meal.id = tag_meal_id
+        WHERE restaurant_id = $1` // query to get one restaurant
 
         client.query(query,[req.headers.restaurantid])
             .then((result) => {
