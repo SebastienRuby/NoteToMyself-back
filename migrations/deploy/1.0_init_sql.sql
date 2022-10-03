@@ -80,7 +80,7 @@ CREATE TABLE "memento" (
     "name" TEXT NOT NULL,
     "content" TEXT, 
     "reminder" INT ,
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "memento_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );

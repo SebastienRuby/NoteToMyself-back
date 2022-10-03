@@ -4,70 +4,86 @@ const restaurants = {
     // Method: GET
     // Path: /restaurants
     // Description: Get all restaurants
-    getAll: (req, res) => {
+    async getAll(req, res){
         const query = 
-        `SELECT *,
-        tag_restaurant.id AS tagRestaurant_id,
-        tag_restaurant.label AS tagRestaurant_label
+        `SELECT restaurant.id,
+        restaurant.name,
+        restaurant.slug,
+        restaurant.favorite,
+        restaurant.photo_url,
+        restaurant.location,
+        restaurant.created_at,
+		ARRAY_AGG(tag_restaurant.label) AS tag_restaurantLabel
         FROM restaurant
         JOIN restaurant_has_tag ON restaurant_id = restaurant.id
         JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id 
-        JOIN user_id = $1 `// query to get all restaurant
+        WHERE user_id = $1
+		GROUP BY restaurant.id`// query to get all restaurant
        
-        client.query(query ,[req.headers.userid])
-            .then((result) => {
-                res.json(result.rows);
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: err.message });
-            });
+        const values = [req.headers.userid];
+
+        try {
+            const result = await client.query(query, values);
+            res.json(result.rows);
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        }
+
     },
 
     // Method: GET
     // Path: /restaurant
     // Description: Get one restaurant
-    getOne: (req, res) => {
-        const query = `SELECT *,
-        tag_restaurant.id AS tagRestaurant_id,
-        tag_restaurant.label AS tagRestaurant_label,
-        meal.id AS meal_id,
-        meal.name AS meal_name,
-        meal.slug AS meal_slug,
-        meal.favorite AS meal_favorite,
-        meal.created_at AS meal_time,
-        tag_meal.label AS tag_meal
+    async getOne(req, res){
+        const query = `SELECT  restaurant.id,
+        restaurant.name,
+        restaurant.slug,
+        restaurant.favorite,
+        restaurant.photo_url,
+        restaurant.location,
+        restaurant.created_at,
+        ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url, meal.favorite, meal.review , ARRAY_AGG(tag_meal.label) as tag_meal ) as _ )) as Meal,
+		ARRAY_AGG(tag_restaurant.label) AS tag_restaurant_Label,
+        ARRAY((Select row_to_json(row(memento.id,memento.name,memento.reminder)) )) AS Memento
         FROM restaurant
         JOIN restaurant_has_tag ON restaurant_id = restaurant.id
         JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id
         JOIN meal ON meal_restaurant_id = restaurant.id
         JOIN meal_has_tag ON meal_id = meal.id
         JOIN tag_meal ON tag_meal.id = tag_meal_id
-        WHERE restaurant_id = $1` // query to get one restaurant
+        JOIN memento ON memento_restaurant_id = restaurant.id
+        WHERE user_id = $1
+		GROUP BY restaurant.id, meal.id, memento.id` // query to get one restaurant 
 
-        client.query(query,[req.headers.restaurantid])
-            .then((result) => {
-                res.json(result.rows);
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: err.message });
-            });
+        const values = [req.headers.restaurantid];
+
+        try {
+            const result = await client.query(query, values);
+            res.json(result.rows);
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        }
     },
 
     // Method: POST
     // Path: /restaurants
     // Description: Create a restaurant
-    create: (req, res) => {
+    async create(req, res){
         const query = 'INSERT INTO public.restaurant (name, slug, location,photo_url, favorite , comment, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-        client.query(query, [req.body.name, req.body.slug, req.body.location,req.body.photo_url, req.body.favorite, req.body.comment, req.headers.user_id])
-            .then((result) => {
-                res.json(result.rows[0]);
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: err.message });
-            });
+        const values = [req.body.name, req.body.slug, req.body.location, req.body.photo_url, req.body.favorite, req.body.comment, req.headers.user_id];
+
+        try {
+            const result = await client.query(query, values);
+            res.json(result.rows[0]);
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        }
     },
 
     // Method: PATCH
@@ -75,31 +91,34 @@ const restaurants = {
     // Description: Update a restaurant
 
     // a voir pour récupérer les données de l'objet pour la modification 
-    update: (req, res) => {
+    async update(req, res){
         const query = 'UPDATE public.restaurant SET name=$1, slug=$2, location=$3,photo_url=$4,favorite=$5, comment=$6 WHERE id=$7 RETURNING *';
-        client.query(query, [req.body.name, req.body.slug, req.body.location,req.body.photo_url, req.body.favorite, req.body.comment, req.headers.id])
-            .then((result) => {
-                res.json(result.rows[0]);
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: err.message });
-            });
-    },
+        const values = [req.body.name, req.body.slug, req.body.location, req.body.photo_url, req.body.favorite, req.body.comment, req.headers.id];
 
+        try {
+            const result = await client.query(query, values);
+            res.json(result.rows[0]);
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        }
+    },
     // Method: DELETE
     // Path: /restaurant
     // Description: Delete a restaurant
-    delete: (req, res) => {
+    async delete(req, res){
         const query = 'DELETE FROM public.restaurant WHERE id=$1';
-        client.query(query, [req.headers.id])
-            .then((result) => {
-                res.json({result :result.rows[0], message:'deleted'});
-            })
-            .catch((err) => {
-                console.error(err);
-                res.status(500).json({ message: err.message });
-            });
+        const values = [req.headers.id];
+
+        try {
+            const result = await client.query(query, values);
+            res.json({result :result.rows[0], message: 'Restaurant deleted'});
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        }
     },
 };
 
