@@ -46,7 +46,7 @@ const restaurants = {
         restaurant.created_at,
         ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url, meal.favorite, meal.review , ARRAY_AGG(tag_meal.label) as tag_meal ) as _ )) as Meal,
 		ARRAY_AGG(tag_restaurant.label) AS tag_restaurant_Label,
-        ARRAY((Select row_to_json(row(memento.id,memento.name,memento.reminder)) )) AS Memento
+        ARRAY((Select row_to_json(_) from (select memento.id,memento.name,memento.reminder) as _ )) AS Memento
         FROM restaurant
         JOIN restaurant_has_tag ON restaurant_id = restaurant.id
         JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id
