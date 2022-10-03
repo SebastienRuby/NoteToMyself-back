@@ -50,7 +50,7 @@ function generateUsers(nbUsers) {
       username: faker.name.firstName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      photo: faker.internet.avatar()
+      photo_url: faker.internet.avatar()
     };
     users.push(user);
   }
@@ -64,7 +64,7 @@ async function insertUsers(users) {
       '${user.username}',
       '${user.email}',
       '${user.password}',
-      '${user.photo}'
+      '${user.photo_url}'
     )`
   );
 
@@ -74,7 +74,7 @@ async function insertUsers(users) {
       "username",
       "email",
       "password",
-      "photo"
+      "photo_url"
     )
       VALUES
     (
@@ -268,10 +268,10 @@ async function generateMeal(nbMeal, restaurantId) {
     const meal = {
       name,
       slug,
-      photo: faker.image.food(),
+      photo_url: faker.image.food(),
       favorite: faker.datatype.boolean(),
       review: faker.company.catchPhrase(),
-      restaurant_id:
+      meal_restaurant_id:
         restaurantId[
           faker.datatype.number({ min: 0, max: restaurantId.length - 1 })
         ],
@@ -288,10 +288,10 @@ async function insertMeal(meals) {
     return `(
                '${newMeal.name}',
                '${newMeal.slug}',
-               '${newMeal.photo}',
+               '${newMeal.photo_url}',
                ${newMeal.favorite},
                '${newMeal.review}',
-               ${newMeal.restaurant_id}
+               ${newMeal.meal_restaurant_id}
            )`;
   });
 
@@ -300,10 +300,10 @@ async function insertMeal(meals) {
            (
                "name",
                "slug",
-               "photo",
+               "photo_url",
                "favorite",
                "review",
-               "restaurant_id"
+               "meal_restaurant_id"
            )
            VALUES
            ${mealValues}

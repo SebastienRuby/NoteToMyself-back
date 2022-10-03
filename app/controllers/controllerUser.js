@@ -8,7 +8,6 @@ const controllerUser = {
     async doLogin(req, res) {
         try {
             const user = await User.findUserByEmail(req.body.email);
-            console.log(req.body.email)
             if (user) {
                 if (user.checkPassword(req.body.password)) {
                     const token = jwt.sign({
@@ -16,7 +15,7 @@ const controllerUser = {
                         username: user.username,
                         email: user.email
                         }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_DURING});
-                    res.status(200).json({token: token, username: user.username, email: user.email});
+                    res.status(200).json({token: token, username: user.username, email: user.email, id:user.id});
                 } else {
                     res.status(401).json({ message: 'Invalid password' });
                 }

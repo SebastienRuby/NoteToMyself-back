@@ -14,7 +14,7 @@ CREATE TABLE "user" (
     "username" TEXT NOT NULL,
     "email" email NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
-    "photo" TEXT, 
+    "photo_url" TEXT, 
     "token" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
@@ -26,6 +26,7 @@ CREATE TABLE "restaurant" (
     "name" TEXT NOT NULL,
     "slug" TEXT,
     "location" TEXT,
+    "photo_url" TEXT,
     "favorite" BOOLEAN ,
     "comment" TEXT,
     "user_id" INT NOT NULL REFERENCES "user" ("id"), 
@@ -53,10 +54,10 @@ CREATE TABLE "meal" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
     "slug" TEXT,
-    "photo" TEXT ,
+    "photo_url" TEXT ,
     "favorite" BOOLEAN ,
     "review" TEXT,
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "meal_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );

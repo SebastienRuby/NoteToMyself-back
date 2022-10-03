@@ -8,7 +8,7 @@ class User {
     this.password = obj.password;
     this.email = obj.email;
     this.token = obj.token;
-    this.photo = obj.photo;
+    this.photo_url = obj.photo_url;
   }
   //create username and password
   static async create(username, password, email) {

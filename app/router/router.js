@@ -15,10 +15,10 @@ router.post('/login', controllerUser.doLogin);
 
 // Router for restaurant
 router.get('/restaurants', authMiddleware.checkToken, controllerRestaurant.restaurants)
-router.get('/restaurants/:id', authMiddleware.checkToken, controllerRestaurant.restaurant);
-router.post('/restaurants', authMiddleware.checkToken, controllerRestaurant.createRestaurant);
-router.patch('/restaurants/:id', authMiddleware.checkToken, controllerRestaurant.updateRestaurant);
-router.delete('/restaurants/:id', authMiddleware.checkToken, controllerRestaurant.deleteRestaurant);
+router.get('/restaurant', authMiddleware.checkToken, controllerRestaurant.restaurant);
+router.post('/restaurant', authMiddleware.checkToken, controllerRestaurant.createRestaurant);
+router.patch('/restaurant', authMiddleware.checkToken, controllerRestaurant.updateRestaurant);
+router.delete('/restaurant', authMiddleware.checkToken, controllerRestaurant.deleteRestaurant);
 
 
 

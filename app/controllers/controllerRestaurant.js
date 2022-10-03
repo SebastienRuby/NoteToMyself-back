@@ -51,7 +51,7 @@ const controllerRestaurant = {
     },
 
     // Method: DELETE
-    // Path: /restaurants/:id
+    // Path: /restaurant
     // Description: Delete a restaurant
     deleteRestaurant: (req, res) => {
         try {
