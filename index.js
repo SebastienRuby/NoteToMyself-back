@@ -1,6 +1,6 @@
 require('dotenv').config();
 const path = require('path');
-const fileUpload = require('express-fileupload');
+// const fileUpload = require('express-fileupload');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -20,7 +20,7 @@ app.use(bodyParser.json());
   resave: true, // Je ré-enregistre les cookies à chaque requête
   secret: process.env.SESSION_SECRET || 'Change Me!',
 })); */
-app.use(fileUpload());
+// app.use(fileUpload());
 app.use(router);
 
 

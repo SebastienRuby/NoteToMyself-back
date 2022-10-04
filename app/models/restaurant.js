@@ -44,7 +44,8 @@ const restaurants = {
         restaurant.photo_url,
         restaurant.location,
         restaurant.created_at,
-        ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url, meal.favorite, meal.review , meal.created_at, ARRAY_AGG(tag_meal.label) as tag_meal ) as _ )) as Meal,
+        ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url, 
+        meal.favorite, meal.review , meal.created_at, ARRAY_AGG(tag_meal.label) as tag_meal ) as _ )) as Meal,
 		ARRAY_AGG(tag_restaurant.label) AS tag_restaurant_Label,
         ARRAY((Select row_to_json(_) from (select memento.*) as _ )) AS Memento
         FROM restaurant
