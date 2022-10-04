@@ -55,4 +55,4 @@ router.delete('/memento', authMiddleware.checkToken, controllerMemento.deleteMem
 //   });
 // });
  
-// module.exports = router;
+module.exports = router;
