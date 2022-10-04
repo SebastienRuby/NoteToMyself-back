@@ -1,4 +1,3 @@
-const client = require('../db/pg');
 const restaurant = require('../models/restaurant');
 const controllerRestaurant = {
 
