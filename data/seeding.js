@@ -428,7 +428,7 @@ async function insertMemento(mementos) {
            (
                "name",
                "reminder",
-               "restaurant_id"
+               "memento_restaurant_id"
            )
            VALUES
            ${mementoValues}

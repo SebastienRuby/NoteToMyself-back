@@ -17,7 +17,7 @@ CREATE TABLE "user" (
     "password" TEXT NOT NULL,
     "photo_url" TEXT, 
     "token" TEXT,
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 
 );
@@ -31,7 +31,7 @@ CREATE TABLE "restaurant" (
     "favorite" BOOLEAN ,
     "comment" TEXT,
     "user_id" INT NOT NULL REFERENCES "user" ("id"), 
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 
 );
