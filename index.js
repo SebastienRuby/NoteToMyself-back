@@ -21,9 +21,8 @@ app.use(bodyParser.json());
   secret: process.env.SESSION_SECRET || 'Change Me!',
 })); */
 // app.use(fileUpload());
+
 app.use(router);
-
-
 
 app.listen(PORT, _ => {
   console.log('Server started on port', PORT);

@@ -37,7 +37,7 @@ const restaurants = {
     // Path: /restaurant
     // Description: Get one restaurant
     async getOne(req, res){
-        const query =  `SELECT  restaurant.id,
+        const query =  /* `SELECT  restaurant.id,
         restaurant.name,
         restaurant.slug,
         restaurant.favorite,
@@ -45,7 +45,7 @@ const restaurants = {
         restaurant.location,
         restaurant.created_at,
         ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url, 
-        meal.favorite, meal.review , meal.created_at, ARRAY_AGG(tag_meal.label) as tag_meal ) as _ )) as Meal,
+        meal.favorite, meal.review , meal.created_at, ARRAY_AGG(tag_meal.label) as tag_meal from meal ) as _ )) as Meal,
 		ARRAY_AGG(tag_restaurant.label) AS tag_restaurant_Label,
         ARRAY((Select row_to_json(_) from (select memento.*) as _ )) AS Memento
         FROM restaurant
@@ -55,12 +55,30 @@ const restaurants = {
         JOIN meal_has_tag ON meal_id = meal.id
         JOIN tag_meal ON tag_meal.id = tag_meal_id
         JOIN memento ON memento_restaurant_id = restaurant.id
-        WHERE restaurant.id = $1
-		GROUP BY restaurant.id, meal.id, memento.id`  
+        WHERE restaurant.id = $1 and user_id = $2
+		GROUP BY restaurant.id, meal.id, memento.id`   */
         // query to get one restaurant 
+        `SELECT
+        restaurant.id,
+        restaurant.name,
+        restaurant.slug,
+        restaurant.favorite,
+        restaurant.photo_url,
+        restaurant.location,
+        restaurant.created_at,
+        ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url,
+        meal.favorite, meal.review , meal.created_at, ARRAY_AGG(tag_meal.label) as tag_meal from meal
+        JOIN meal_has_tag ON meal_id = meal.id
+        JOIN tag_meal ON tag_meal.id = tag_meal_id 
+        where meal_restaurant_id = restaurant.id 
+        Group by  meal.id, meal.name, meal.slug, meal.photo_url,
+        meal.favorite, meal.review , meal.created_at) as _ )) as Meal,
+        ARRAY((Select row_to_json(_) from (select memento.*  from memento where memento_restaurant_id = restaurant.id) as _ )) AS Memento
+        FROM restaurant
+        WHERE restaurant.id = $1 and user_id = $2
+        GROUP BY restaurant.id`	
 
-
-        const values = [req.headers.restaurantid];
+        const values = [req.headers.restaurantid , req.headers.userid];
 
         try {
             const result = await client.query(query, values);
