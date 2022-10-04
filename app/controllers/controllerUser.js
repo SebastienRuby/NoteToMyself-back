@@ -43,7 +43,7 @@ const controllerUser = {
                     username: newUserLogged.username,
                     email: newUserLogged.email
                     }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_DURING});
-                res.status(200).json({ token , username :newUserLogged.username});
+                res.status(200).json({ token , username :newUserLogged.username , id: newUserLogged.id});
             }
 
         } catch (err) {
