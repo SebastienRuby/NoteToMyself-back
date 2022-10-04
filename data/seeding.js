@@ -268,11 +268,12 @@ async function generateMeal(nbMeal, restaurantId) {
   for (let i = 0; i < nbMeal; i += 1) {
     let name = `Steak de ${faker.animal.type()}`;
     let slug = string_to_slug(name)
+    let photo_url = `https://loremflickr.com/640/480/food,meal`
 
     const meal = {
       name,
       slug,
-      photo_url: faker.image.food(),
+      photo_url,
       favorite: faker.datatype.boolean(),
       review: faker.company.catchPhrase(),
       meal_restaurant_id:
