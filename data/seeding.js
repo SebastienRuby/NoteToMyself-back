@@ -121,11 +121,13 @@ async function generateRestaurant(nbResto, userId) {
     let name = `Chez ${faker.name.firstName()} ${faker.name.suffix()}`;
     let location = `${faker.address.buildingNumber()} ${faker.address.street()}, ${faker.address.city()} ${faker.address.zipCode()} France`;
     let slug = string_to_slug(name)
+    let photo_url = `https://loremflickr.com/640/480/restaurant,food`
 
     const restaurant = {
       name,
       slug,
       comment: faker.company.catchPhrase(),
+      photo_url,
       favorite: faker.datatype.boolean(),
       user_id:
         userId[faker.datatype.number({ min: 0, max: userId.length - 1 })],
@@ -144,10 +146,11 @@ async function insertRestaurant(restaurants) {
                '${newRestaurant.name}',
                '${newRestaurant.slug}',
                '${newRestaurant.comment}',
+               '${newRestaurant.photo_url}',
                ${newRestaurant.favorite},
                ${newRestaurant.user_id},
                '${newRestaurant.location}'
-           )`;
+            )`;
   });
 
   const queryStr = `
@@ -156,6 +159,7 @@ async function insertRestaurant(restaurants) {
                "name",
                "slug",
                "comment",
+               "photo_url",
                "favorite",
                "user_id",
                "location"

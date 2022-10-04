@@ -37,7 +37,7 @@ const restaurants = {
     // Path: /restaurant
     // Description: Get one restaurant
     async getOne(req, res){
-        const query = `SELECT  restaurant.id,
+        const query =  `SELECT  restaurant.id,
         restaurant.name,
         restaurant.slug,
         restaurant.favorite,
@@ -46,7 +46,7 @@ const restaurants = {
         restaurant.created_at,
         ARRAY((Select row_to_json(_) from (select meal.id, meal.name, meal.slug, meal.photo_url, meal.favorite, meal.review , meal.created_at, ARRAY_AGG(tag_meal.label) as tag_meal ) as _ )) as Meal,
 		ARRAY_AGG(tag_restaurant.label) AS tag_restaurant_Label,
-        ARRAY((Select row_to_json(_) from (select memento.id,memento.name,memento.reminder, memento.created_at) as _ )) AS Memento
+        ARRAY((Select row_to_json(_) from (select memento.*) as _ )) AS Memento
         FROM restaurant
         JOIN restaurant_has_tag ON restaurant_id = restaurant.id
         JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id
@@ -54,8 +54,10 @@ const restaurants = {
         JOIN meal_has_tag ON meal_id = meal.id
         JOIN tag_meal ON tag_meal.id = tag_meal_id
         JOIN memento ON memento_restaurant_id = restaurant.id
-        WHERE user_id = $1
-		GROUP BY restaurant.id, meal.id, memento.id` // query to get one restaurant 
+        WHERE restaurant.id = $1
+		GROUP BY restaurant.id, meal.id, memento.id`  
+        // query to get one restaurant 
+
 
         const values = [req.headers.restaurantid];
 
