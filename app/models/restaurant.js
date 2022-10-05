@@ -59,8 +59,12 @@ class Restaurant {
         restaurant.photo_url,
         restaurant.location,
         to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
-        to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at,
-		ARRAY(select distinct tag_restaurant.label from tag_restaurant, restaurant_has_tag, restaurant where restaurant_id = restaurant.id and tag_restaurant.id = tag_restaurant_id)AS TagRestaurant,
+        to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at, 
+        (select ARRAY_AGG(tag_restaurant.label) labels
+        FROM restaurant
+                JOIN restaurant_has_tag on restaurant_id = restaurant.id
+                JOIN tag_restaurant ON tag_restaurant_id = tag_restaurant.id
+                where restaurant.id = $1),
         ARRAY((SELECT row_to_json(_) FROM (SELECT meal.id, meal.name, meal.slug, meal.photo_url,
         meal.favorite, meal.review ,meal.meal_restaurant_id, to_char(meal.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(meal.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at, ARRAY_AGG(tag_meal.label) AS tag_meal FROM meal
         JOIN meal_has_tag ON meal_id = meal.id
