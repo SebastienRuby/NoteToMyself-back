@@ -1,11 +1,25 @@
 const express = require('express');
-// const app = express();
 const router = express.Router();
 const controllerMeal = require('../controllers/controllerMeal');
 const controllerMemento = require('../controllers/controllerMemento');
 const controllerUser = require('../controllers/controllerUser');
 const controllerRestaurant = require('../controllers/controllerRestaurant');
 const authMiddleware = require('../middleware/authMiddleware');
+
+router.post('/upload', (req, res) => {
+    if (req.files === null) {
+      return res.status(400).json({ msg: 'No file uploaded' });
+    }
+    const file = req.files.file;
+    file.mv(`${__dirname}/client/public/uploads/${file.name}`, err => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send(err);
+      }
+      res.json({ fileName: file.name, filePath: `/uploads/${file.name}` });
+    });
+  });
+
 
 // Router for user
 router.post('/signup', controllerUser.doSignUp);
@@ -31,28 +45,5 @@ router.delete('/meal', authMiddleware.checkToken, controllerMeal.deleteMeal);
 router.post('/memento', authMiddleware.checkToken, controllerMemento.createMemento);
 router.patch('/memento', authMiddleware.checkToken, controllerMemento.updateMemento);
 router.delete('/memento', authMiddleware.checkToken, controllerMemento.deleteMemento);
-
-
-
-// app.post('/upload', function(req, res) {
-//   let sampleFile;
-//   let uploadPath;
-
-//   if (!req.files || Object.keys(req.files).length === 0) {
-//     return res.status(400).send('No files were uploaded.');
-//   }
-
-//   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-//   sampleFile = req.files.sampleFile;
-//   uploadPath = __dirname + '/somewhere/on/your/server/' + sampleFile.name;
-
-//   // Use the mv() method to place the file somewhere on your server
-//   sampleFile.mv(uploadPath, function(err) {
-//     if (err)
-//       return res.status(500).send(err);
-
-//     res.send('File uploaded!');
-//   });
-// });
  
 module.exports = router;
