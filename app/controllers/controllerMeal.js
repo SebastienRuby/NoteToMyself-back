@@ -1,4 +1,4 @@
-const meal = require('../models/meal');
+const Meal = require('../models/meal');
 
 const controllerMeal = {
     // Method: POST
@@ -6,7 +6,7 @@ const controllerMeal = {
     // Description: Create a meal
     createMeal: (req, res) => {
         try {
-            meal.create(req, res);
+            Meal.create(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
@@ -18,7 +18,7 @@ const controllerMeal = {
     // Description: Update a meal
     updateMeal: (req, res) => {
         try {
-            meal.update(req, res);
+            Meal.update(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
@@ -30,7 +30,7 @@ const controllerMeal = {
     // Description: Delete a meal
     deleteMeal: (req, res) => {
         try {
-            meal.delete(req, res);
+            Meal.delete(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });

@@ -1,4 +1,4 @@
-const restaurant = require('../models/restaurant');
+const Restaurant = require('../models/restaurant');
 const controllerRestaurant = {
 
     // Method: GET
@@ -6,7 +6,7 @@ const controllerRestaurant = {
     // Description: Get all restaurants
     restaurants: (req, res) => {
         try {
-            restaurant.getAll(req, res);
+            Restaurant.getAll(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
@@ -18,7 +18,7 @@ const controllerRestaurant = {
     // Description: Get one restaurant
     restaurant: (req, res) => {
         try {
-            restaurant.getOne(req, res);
+            Restaurant.getOne(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
@@ -30,7 +30,7 @@ const controllerRestaurant = {
     // Description: Create a restaurant
     createRestaurant: (req, res) => {
         try {
-            restaurant.create(req, res);
+            Restaurant.create(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
@@ -42,7 +42,7 @@ const controllerRestaurant = {
     // Description: Update a restaurant
     updateRestaurant: (req, res) => {
         try {
-            restaurant.update(req, res);
+            Restaurant.update(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
@@ -54,7 +54,7 @@ const controllerRestaurant = {
     // Description: Delete a restaurant
     deleteRestaurant: (req, res) => {
         try {
-            restaurant.delete(req, res);
+            Restaurant.delete(req, res);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: error.message });
