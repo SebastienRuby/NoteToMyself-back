@@ -15,7 +15,11 @@ router.post('/upload', (req, res) => {
     return res.status(400).json({ msg: 'No file uploaded' });
   }
   const file = req.files.file;
-  const newfileName = `${file} - ${Date.now()}`;
+  const split = file.name.split('.');
+  const fileExtension = split[split.length - 1];
+  const fileName = file.name.replace(/\.[^/.]+$/, '');
+  console.log(fileExtension);
+  const newfileName = `${fileName}-${Date.now()}.${fileExtension}`;
   file.mv(`${public}/${newfileName}`, err => {
     if (err) {
       console.error(err);
