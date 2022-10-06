@@ -75,15 +75,7 @@ const controllerUser = {
 
   async deleteUser(req, res) {
     try {
-      const user = await User.findUserById(req.headers.id);
-      if (user) {
-        await User.delete(req.headers.id);
-        res
-          .status(200)
-          .json({ message: `L'utilisateur ${user.username} a été supprimé` });
-      } else {
-        res.status(401).json({ message: 'L\'utilisateur n\'existe pas' });
-      }
+      User.delete(req, res);
     } catch (err) {
       console.error(err);
       res.send(err.message).status(401);
@@ -92,19 +84,12 @@ const controllerUser = {
 
   async updateUser(req, res) {
     try {
-      const user = await User.findUserById(req.headers.id);
-      if (user) {
-        await User.update(req.headers.id, req.body.username, req.body.password);
-        res
-          .status(200)
-          .json({ message: `L'utilisateur ${user.username} a été modifié` });
-      } else {
-        res.status(401).json({ message: 'L\'utilisateur n\'existe pas' });
-      }
+      User.update(req, res);
     } catch (err) {
       console.error(err);
       res.send(err.message).status(401);
     }
   },
 };
+
 module.exports = controllerUser;
