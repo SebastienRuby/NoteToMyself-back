@@ -45,6 +45,7 @@ app.use(bodyParser.json());
 
 app.use(router);
 
+// eslint-disable-next-line
 app.listen(PORT, _ => {
   console.log('Server started on port', PORT);
 });

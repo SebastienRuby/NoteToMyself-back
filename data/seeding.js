@@ -1,11 +1,11 @@
 require('dotenv').config();
-const { faker } = require("@faker-js/faker");
-const debug = require("debug")("seeding");
+const { faker } = require('@faker-js/faker');
+const debug = require('debug')('seeding');
 
-const db = require("../app/db/pg");
+const db = require('../app/db/pg');
 debug.queryCount = 0;
 
-faker.locale = "fr";
+faker.locale = 'fr';
 const NB_USERS = 1;
 const NB_RESTAURANTS = 10;
 const NB_RESTAURANTS_TAGS = 5;
@@ -16,28 +16,30 @@ const NB_MEMENTOS = 7;
 function pgQuoteEscape(row) {
   const newRow = {};
   Object.entries(row).forEach(([prop, value]) => {
-    if (typeof value !== "string") {
+    if (typeof value !== 'string') {
       newRow[prop] = value;
       return;
     }
+    // eslint-disable-next-line
     newRow[prop] = value.replaceAll("'", "''");
   });
   return newRow;
 }
-function string_to_slug (str) {
+function string_to_slug(str) {
   str = str.replace(/^\s+|\s+$/g, ''); // trim
   str = str.toLowerCase();
 
   // remove accents, swap ñ for n, etc
-  var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-  var to   = "aaaaeeeeiiiioooouuuunc------";
-  for (var i=0, l=from.length ; i<l ; i++) {
-      str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+  var from = 'àáäâèéëêìíïîòóöôùúüûñç·/_,:;';
+  var to = 'aaaaeeeeiiiioooouuuunc------';
+  for (var i = 0, l = from.length; i < l; i++) {
+    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
   }
 
-  str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-      .replace(/\s+/g, '-') // collapse whitespace and replace by -
-      .replace(/-+/g, '-'); // collapse dashes
+  str = str
+    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+    .replace(/-+/g, '-'); // collapse dashes
 
   return str;
 }
@@ -50,7 +52,7 @@ function generateUsers(nbUsers) {
       username: faker.name.firstName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      photo_url: faker.internet.avatar()
+      photo_url: faker.internet.avatar(),
     };
     users.push(user);
   }
@@ -120,8 +122,9 @@ async function generateRestaurant(nbResto, userId) {
   for (let i = 0; i < nbResto; i += 1) {
     let name = `Chez ${faker.name.firstName()} ${faker.name.suffix()}`;
     let location = `${faker.address.buildingNumber()} ${faker.address.street()}, ${faker.address.city()} ${faker.address.zipCode()} France`;
-    let slug = string_to_slug(name)
-    let photo_url = `https://loremflickr.com/640/480/restaurant,food`
+    let coordinate = '48.866667-2.333333';
+    let slug = string_to_slug(name);
+    let photo_url = 'https://loremflickr.com/640/480/restaurant,food';
 
     const restaurant = {
       name,
@@ -132,6 +135,7 @@ async function generateRestaurant(nbResto, userId) {
       user_id:
         userId[faker.datatype.number({ min: 0, max: userId.length - 1 })],
       location,
+      coordinate,
     };
     restaurants.push(restaurant);
   }
@@ -267,8 +271,8 @@ async function generateMeal(nbMeal, restaurantId) {
   const meals = [];
   for (let i = 0; i < nbMeal; i += 1) {
     let name = `Steak de ${faker.animal.type()}`;
-    let slug = string_to_slug(name)
-    let photo_url = `https://loremflickr.com/640/480/food,meal`
+    let slug = string_to_slug(name);
+    let photo_url = 'https://loremflickr.com/640/480/food,meal';
 
     const meal = {
       name,
@@ -369,7 +373,7 @@ function generateMealHasTag(mealIds, tagMealIds) {
 
         tagsMeal.push({
           mealId,
-          tagMealId
+          tagMealId,
         });
       }
       return tagsMeal;
@@ -380,7 +384,8 @@ function generateMealHasTag(mealIds, tagMealIds) {
 // Insertion des liaisons des tags de plat aux plats dans la BDD
 async function insertMealHasTag(mealHasTags) {
   await db.query('TRUNCATE TABLE "meal_has_tag" RESTART IDENTITY CASCADE');
-  const mealHasTagValues = mealHasTags.map((mealHasTag) => `(
+  const mealHasTagValues = mealHasTags.map(
+    (mealHasTag) => `(
       ${mealHasTag.mealId},
       ${mealHasTag.tagMealId}
     )`
@@ -477,9 +482,16 @@ async function insertMemento(mementos) {
    * Association des restaurants et des tags restaurant
    * Ajout de ces associations en BDD
    */
-  const restaurantHasTags = generateRestaurantHasTag(restaurantIds,tagsRestaurantIds);
-  const insertedRestaurantHasTags = await insertRestaurantHasTag(restaurantHasTags);
-  debug(`${insertedRestaurantHasTags.length} restaurant <> tag_restaurant association inserted`);
+  const restaurantHasTags = generateRestaurantHasTag(
+    restaurantIds,
+    tagsRestaurantIds
+  );
+  const insertedRestaurantHasTags = await insertRestaurantHasTag(
+    restaurantHasTags
+  );
+  debug(
+    `${insertedRestaurantHasTags.length} restaurant <> tag_restaurant association inserted`
+  );
 
   /**
    * Génération des plats fake

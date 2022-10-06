@@ -27,6 +27,7 @@ CREATE TABLE "restaurant" (
     "name" TEXT NOT NULL,
     "slug" TEXT,
     "location" TEXT,
+    "coordinates" TEXT,
     "photo_url" TEXT,
     "favorite" BOOLEAN ,
     "comment" TEXT,

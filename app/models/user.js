@@ -56,10 +56,10 @@ class User {
 
   }
 
-  static async update(username, password ,id) {
+  static async update(username, password, id) {
     const passwordcrypt = await bcrypt.hash(password, 10);
     const result = await client.query(
-      'UPDATE public."user" SET username=$1, password=$2 WHERE id=$3 RETURNING *',
+      'UPDATE public.user SET username=$1, password=$2 WHERE id=$3 RETURNING *',
       [username, passwordcrypt, id]
     );
     return result;
@@ -67,7 +67,7 @@ class User {
 
 
   checkPassword(password) {
-    return bcrypt.compareSync(password, this.password);
+    return bcrypt.compareSync(password, this.password);r
   }
 }
 
