@@ -3,7 +3,7 @@ const client = require('../db/pg');
 
 const controllerUpload = {
   uploadImage: (req, res) => {
-    const public = path.join('../../public/uploads');
+    const public = path.join(__dirname, '..', '..', 'public', 'uploads');
     if (req.files === null) {
       return res.status(400).json({ msg: 'No file uploaded' });
     }
@@ -18,27 +18,24 @@ const controllerUpload = {
         console.error(err);
         return res.status(500).send(err);
       }
-      res.json({
-        fileName: newfileName,
-        filePath: `public/uploads/${newfileName}`,
-      });
-      const photo_url = `/public/uploads/${newfileName}`;
+
+      const photo_url = `/uploads/${newfileName}`;
       const type = req.headers.type;
-      const query = '';
-      const values = '';
+      let query = '';
+      let values = '';
       /*eslint-disable */
       switch (type) {
         case 'profile':
           query = 'UPDATE user SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.body.id];
+          values = [photo_url, req.headers.userid];
           break;
         case 'restaurant':
           query = 'UPDATE restaurant SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.body.id];
+          values = [photo_url, req.headers.userid];
           break;
         case 'meal':
           query = 'UPDATE meal SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.body.id];
+          values = [photo_url, req.headers.userid];
           break;
 
         default:
@@ -52,7 +49,10 @@ const controllerUpload = {
           console.error(err);
           res.status(500).json({ message: err.message });
         }
-        res.status(200).json({ message: 'Image uploaded' });
+        res.status(200).json({
+          fileName: newfileName,
+          filePath: `/uploads/${newfileName}`,
+        });
       });
     });
   },
