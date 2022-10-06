@@ -34,10 +34,28 @@ class User {
     }
   }
 
+  static async delete(id) {
+    const result = await client.query(
+      'DELETE FROM public."user" WHERE id=$1',
+      [id]
+    );
+    return result;
+
+  }
+
+  static async update(username, password ,id) {
+    const passwordcrypt = await bcrypt.hash(password, 10);
+    const result = await client.query(
+      'UPDATE public."user" SET username=$1, password=$2 WHERE id=$3 RETURNING *',
+      [username, passwordcrypt, id]
+    );
+    return result;
+  }
+
+
   checkPassword(password) {
     return bcrypt.compareSync(password, this.password);
   }
 }
-
 
 module.exports = User;

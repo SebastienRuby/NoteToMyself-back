@@ -6,6 +6,7 @@ const controllerMemento = require('../controllers/controllerMemento');
 const controllerUser = require('../controllers/controllerUser');
 const controllerRestaurant = require('../controllers/controllerRestaurant');
 const authMiddleware = require('../middleware/authMiddleware');
+const client = require('../db/pg');
 
 // upload image middleware
 router.post('/upload', (req, res) => {
@@ -26,13 +27,25 @@ router.post('/upload', (req, res) => {
       return res.status(500).send(err);
     }
     res.json({ fileName: newfileName, filePath: `/uploads/${newfileName}` });
+    const photo_url = `/uploads/${newfileName}`;
+    const query = `UPDATE restaurant SET photo_url = $1 WHERE id = $2`;
+    const values = [photo_url, req.body.id];
+    client.query(query, values, (err) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+      }
+      res.status(200).json({ message: 'Image uploaded' });
   });
+});
 });
 
 
 // Router for user
 router.post('/signup', controllerUser.doSignUp);
 router.post('/login', controllerUser.doLogin);
+router.put('/user', authMiddleware, controllerUser.updateUser);
+router.delete('/user', authMiddleware, controllerUser.deleteUser);
 
 // Router for restaurant
 router.get('/restaurants', authMiddleware.checkToken, controllerRestaurant.restaurants);
