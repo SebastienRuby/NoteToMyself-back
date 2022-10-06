@@ -10,8 +10,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 // Router for user
 router.post('/signup', controllerUser.doSignUp);
 router.post('/login', controllerUser.doLogin);
-router.put('/user', authMiddleware, controllerUser.updateUser);
-router.delete('/user', authMiddleware, controllerUser.deleteUser);
+router.patch('/user', authMiddleware.checkToken, controllerUser.updateUser);
+router.delete('/user', authMiddleware.checkToken, controllerUser.deleteUser);
 
 // Router for restaurant
 router.get('/restaurants', authMiddleware.checkToken, controllerRestaurant.restaurants);
