@@ -1,3 +1,6 @@
+const path = require('path');
+const client = require('../db/pg');
+
 const controllerUpload = {
 
     uploadImage: (req, res) => {
@@ -49,7 +52,6 @@ const controllerUpload = {
         });
     });
     }
-
 }
 
 module.exports = controllerUpload;
