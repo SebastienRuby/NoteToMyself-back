@@ -122,7 +122,6 @@ async function generateRestaurant(nbResto, userId) {
   for (let i = 0; i < nbResto; i += 1) {
     let name = `Chez ${faker.name.firstName()} ${faker.name.suffix()}`;
     let location = `${faker.address.buildingNumber()} ${faker.address.street()}, ${faker.address.city()} ${faker.address.zipCode()} France`;
-    let coordinate = '48.866667-2.333333';
     let slug = string_to_slug(name);
     let photo_url = 'https://loremflickr.com/640/480/restaurant,food';
 
@@ -135,7 +134,6 @@ async function generateRestaurant(nbResto, userId) {
       user_id:
         userId[faker.datatype.number({ min: 0, max: userId.length - 1 })],
       location,
-      coordinate,
     };
     restaurants.push(restaurant);
   }
