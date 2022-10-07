@@ -56,31 +56,31 @@ class Restaurant {
         restaurant.location,
         to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
         to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at, 
-        (select ARRAY_AGG(tag_restaurant.label) labels
+        (select ARRAY_AGG(tag_restaurant.label) tag
         FROM restaurant
                 JOIN restaurant_has_tag on restaurant_id = restaurant.id
                 JOIN tag_restaurant ON tag_restaurant_id = tag_restaurant.id
                 where restaurant.id = $1),
         ARRAY((SELECT row_to_json(_) FROM (SELECT meal.id, meal.name, meal.slug, meal.photo_url,
-        meal.favorite, meal.review ,meal.meal_restaurant_id, to_char(meal.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(meal.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at, ARRAY_AGG(tag_meal.label) AS tag_meal FROM meal
-        JOIN meal_has_tag ON meal_id = meal.id
-        JOIN tag_meal ON tag_meal.id = tag_meal_id 
-        WHERE meal.meal_restaurant_id = restaurant.id 
-        GROUP BY  meal.id, meal.name, meal.slug, meal.photo_url,
-        meal.favorite, meal.review , meal.created_at) AS _ )) AS Meal,
-        ARRAY((SELECT row_to_json(_) FROM (SELECT memento.id, memento.name, memento.content, memento.reminder,memento.memento_restaurant_id, to_char(memento.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(memento.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at FROM memento WHERE memento_restaurant_id = restaurant.id) AS _ )) AS Memento
+        meal.favorite, meal.review ,meal.meal_restaurant_id, to_char(meal.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(meal.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at FROM meal WHERE meal.meal_restaurant_id = $1) _) ) AS meal,   
+        ARRAY((SELECT row_to_json(_) FROM (SELECT memento.id, memento.name, memento.content, memento.reminder,
+        memento.memento_restaurant_id, to_char(memento.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(memento.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at FROM memento WHERE memento_restaurant_id = restaurant.id) AS _ )) AS Memento
         FROM restaurant
         WHERE restaurant.id = $1
         GROUP BY restaurant.id`;
 
     const values = [req.headers.restaurantid];
 
-    try {
-      const result = await client.query(query, values);
-      res.json(result.rows);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
+        try {
+            const result = await client.query(query, values);
+            // boucler sur les résultats pour récupérer les tags 
+            res.json(result.rows)
+            console.log(result.rows)
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ message: err.message });
+        }
     }
   }
 
