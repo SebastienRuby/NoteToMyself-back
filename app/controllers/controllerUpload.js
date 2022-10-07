@@ -26,7 +26,7 @@ const controllerUpload = {
       /*eslint-disable */
       switch (type) {
         case 'profile':
-          query = 'UPDATE user SET photo_url = $1 WHERE id = $2';
+          query = 'UPDATE public.user SET photo_url = $1 WHERE id = $2';
           values = [photo_url, req.headers.userid];
           break;
         case 'restaurant':
