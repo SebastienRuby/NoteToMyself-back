@@ -54,6 +54,7 @@ class Restaurant {
         restaurant.favorite,
         restaurant.photo_url,
         restaurant.location,
+        restaurant.coordinate,
         to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
         to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at, 
         (select ARRAY_AGG(tag_restaurant.label) tag
