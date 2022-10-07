@@ -4,6 +4,7 @@ const controllerMeal = require('../controllers/controllerMeal');
 const controllerMemento = require('../controllers/controllerMemento');
 const controllerUser = require('../controllers/controllerUser');
 const controllerRestaurant = require('../controllers/controllerRestaurant');
+const controllerTag = require('../controllers/controllerTag');
 const controllerUpload = require('../controllers/controllerUpload');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -30,6 +31,15 @@ router.post('/memento', authMiddleware.checkToken, controllerMemento.createMemen
 router.patch('/memento', authMiddleware.checkToken, controllerMemento.updateMemento);
 router.delete('/memento', authMiddleware.checkToken, controllerMemento.deleteMemento);
 
+// Router for meals tags
+router.post('/tag/meal', authMiddleware.checkToken, controllerTag.createTagMeal);
+router.delete('/tag/meal', authMiddleware.checkToken, controllerTag.deleteTagMeal);
+
+// Router for restaurant tags
+router.post('/tag/restaurant', authMiddleware.checkToken, controllerTag.createTagRestaurant);
+router.delete('/tag/restaurant', authMiddleware.checkToken, controllerTag.deleteTagRestaurant);
+
 // Router for upload
 router.post('/upload', authMiddleware.checkToken, controllerUpload.uploadImage);
+
 module.exports = router;
