@@ -16,9 +16,9 @@ CREATE TABLE "user" (
     "email" email NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "photo_url" TEXT, 
+    "dark" BOOLEAN,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
-
 );
 
 CREATE TABLE "restaurant" (
@@ -27,14 +27,13 @@ CREATE TABLE "restaurant" (
     "slug" TEXT,
     "location" TEXT,
     "photo_url" TEXT,
-    "favorite" BOOLEAN ,
+    "favorite" BOOLEAN,
     "latitude" FLOAT,
     "longitude" FLOAT,
     "comment" TEXT,
     "user_id" INT NOT NULL REFERENCES "user" ("id"), 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
-
 );
 
 CREATE TABLE "tag_restaurant" (

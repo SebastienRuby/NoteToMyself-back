@@ -124,6 +124,8 @@ async function generateRestaurant(nbResto, userId) {
     let location = `${faker.address.buildingNumber()} ${faker.address.street()}, ${faker.address.city()} ${faker.address.zipCode()} France`;
     let slug = string_to_slug(name);
     let photo_url = 'https://loremflickr.com/640/480/restaurant,food';
+    let latitude = 48.866667;
+    let longitude = -2.333333;
 
     const restaurant = {
       name,
@@ -134,6 +136,8 @@ async function generateRestaurant(nbResto, userId) {
       user_id:
         userId[faker.datatype.number({ min: 0, max: userId.length - 1 })],
       location,
+      latitude,
+      longitude,
     };
     restaurants.push(restaurant);
   }
@@ -152,24 +156,28 @@ async function insertRestaurant(restaurants) {
                ${newRestaurant.favorite},
                ${newRestaurant.user_id},
                '${newRestaurant.location}'
+               ${newRestaurant.latitude},
+               ${newRestaurant.longitude}
             )`;
   });
 
   const queryStr = `
-           INSERT INTO "restaurant"
-           (
-               "name",
-               "slug",
-               "comment",
-               "photo_url",
-               "favorite",
-               "user_id",
-               "location"
-           )
-           VALUES
-           ${restaurantValues}
-           RETURNING id
-   `;
+    INSERT INTO "restaurant"
+      (
+      "name",
+      "slug",
+      "comment",
+      "photo_url",
+      "favorite",
+      "user_id",
+      "location",
+      "latitude",
+      "longitude"
+      )
+      VALUES
+      ${restaurantValues}
+      RETURNING id
+    `;
   const result = await db.query(queryStr);
   return result.rows;
 }

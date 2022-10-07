@@ -8,6 +8,7 @@ class User {
     this.password = obj.password;
     this.email = obj.email;
     this.token = obj.token;
+    this.dark = obj.dark;
     this.photo_url = obj.photo_url;
   }
   //create username and password
@@ -34,8 +35,7 @@ class User {
   }
 
   static async findUserById(id) {
-    const result = await client.query('SELECT * FROM public.user WHERE id=$1',
-      [id]);
+    const result = await client.query('SELECT * FROM public.user WHERE id=$1', [id]);
     if (result.rows.length > 0) {
       return new User(result.rows[0]);
     } else {
@@ -58,8 +58,8 @@ class User {
   static async update(req, res) {
     const passwordcrypt = await bcrypt.hash(req.body.password, 10);
     const query =
-      'UPDATE public.user SET username=$1, password=$2 WHERE id=$3 RETURNING *';
-    const values = [req.body.username, passwordcrypt, req.headers.userid];
+      'UPDATE public.user SET username=$1, password=$2, dark=$3 WHERE id=$4 RETURNING *';
+    const values = [req.body.username, passwordcrypt, req.body.dark, req.headers.userid];
     try {
       await client.query(query, values);
       res.json({ message: `User ${req.body.username} updated`});
