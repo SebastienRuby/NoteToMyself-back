@@ -1,5 +1,5 @@
 -- SQLBook: Code
--- Active: 1663948777343@@127.0.0.1@5432@noteToMyself@public
+-- Active: 1664437886799@@127.0.0.1@5432@note_to_my_self@public
 -- SQLBook: Code
 --- Deploy note_to_my_self:1.0_init_sql from pg
 
@@ -16,7 +16,7 @@ CREATE TABLE "user" (
     "email" email NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "photo_url" TEXT, 
-    "dark" BOOLEAN,
+    "dark" BOOLEAN DEFAULT FALSE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
@@ -27,9 +27,8 @@ CREATE TABLE "restaurant" (
     "slug" TEXT,
     "location" TEXT,
     "photo_url" TEXT,
-    "favorite" BOOLEAN,
-    "latitude" FLOAT,
-    "longitude" FLOAT,
+    "favorite" BOOLEAN DEFAULT false,
+    "coordinate" TEXT,
     "comment" TEXT,
     "user_id" INT NOT NULL REFERENCES "user" ("id"), 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -56,7 +55,7 @@ CREATE TABLE "meal" (
     "name" TEXT NOT NULL,
     "slug" TEXT,
     "photo_url" TEXT ,
-    "favorite" BOOLEAN ,
+    "favorite" BOOLEAN DEFAULT false,
     "review" TEXT,
     "meal_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),

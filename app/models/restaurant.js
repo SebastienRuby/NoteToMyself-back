@@ -87,11 +87,12 @@ class Restaurant {
   // Description: Create a restaurant
   static async create(req, res) {
     const query =
-      'INSERT INTO public.restaurant (name, slug, location,photo_url, favorite , comment, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+      'INSERT INTO public.restaurant (name, slug, location, coordinate, photo_url, favorite , comment, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
     const values = [
       req.body.name,
       req.body.slug,
       req.body.location,
+      req.body.coordinate,
       req.body.photo_url,
       req.body.favorite,
       req.body.comment,
@@ -115,11 +116,12 @@ class Restaurant {
   static async update(req, res) {
     let date = moment().format('MM/DD/YYYY HH:mm:ss');
     const query =
-      'UPDATE public.restaurant SET name=$1, slug=$2, location=$3,photo_url=$4,favorite=$5, comment=$6 , updated_at = $7 WHERE id=$8 RETURNING *';
+      'UPDATE public.restaurant SET name=$1, slug=$2, location=$3, coordinate=$4, photo_url=$5, favorite=$6, comment=$7 , updated_at = $8 WHERE id=$9 RETURNING *';
     const values = [
       req.body.name,
       req.body.slug,
       req.body.location,
+      req.body.coordinate,
       req.body.photo_url,
       req.body.favorite,
       req.body.comment,
