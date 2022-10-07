@@ -71,16 +71,14 @@ class Restaurant {
 
     const values = [req.headers.restaurantid];
 
-        try {
-            const result = await client.query(query, values);
-            // boucler sur les résultats pour récupérer les tags 
-            res.json(result.rows)
-            console.log(result.rows)
-        }
-        catch (err) {
-            console.error(err);
-            res.status(500).json({ message: err.message });
-        }
+    try {
+      const result = await client.query(query, values);
+      // boucler sur les résultats pour récupérer les tags
+      res.json(result.rows);
+      console.log(result.rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
     }
   }
 
