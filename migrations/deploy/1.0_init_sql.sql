@@ -30,7 +30,7 @@ CREATE TABLE "restaurant" (
     "favorite" BOOLEAN DEFAULT false,
     "coordinate" TEXT,
     "comment" TEXT,
-    "user_id" INT NOT NULL REFERENCES "user" ("id"), 
+    "user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE, 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
@@ -44,8 +44,8 @@ CREATE TABLE "tag_restaurant" (
 
 CREATE TABLE "restaurant_has_tag" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "tag_restaurant_id" INT NOT NULL REFERENCES "tag_restaurant" ("id"),
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"),
+    "tag_restaurant_id" INT NOT NULL REFERENCES "tag_restaurant" ("id") ON DELETE CASCADE,
+    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -57,7 +57,7 @@ CREATE TABLE "meal" (
     "photo_url" TEXT ,
     "favorite" BOOLEAN DEFAULT false,
     "review" TEXT,
-    "meal_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "meal_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id") ON DELETE CASCADE, 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -69,8 +69,8 @@ CREATE TABLE "tag_meal" (
 );
 CREATE TABLE "meal_has_tag" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "tag_meal_id" INT NOT NULL REFERENCES "tag_meal" ("id"),
-    "meal_id" INT NOT NULL REFERENCES "meal" ("id"),
+    "tag_meal_id" INT NOT NULL REFERENCES "tag_meal" ("id") ON DELETE CASCADE,
+    "meal_id" INT NOT NULL REFERENCES "meal" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -80,7 +80,7 @@ CREATE TABLE "memento" (
     "name" TEXT NOT NULL,
     "content" TEXT, 
     "reminder" INT ,
-    "memento_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "memento_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id") ON DELETE CASCADE, 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
