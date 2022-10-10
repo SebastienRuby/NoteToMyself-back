@@ -61,12 +61,14 @@ CREATE TABLE "meal" (
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
+
 CREATE TABLE "tag_meal" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "label" text,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
+
 CREATE TABLE "meal_has_tag" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "tag_meal_id" INT NOT NULL REFERENCES "tag_meal" ("id") ON DELETE CASCADE,
