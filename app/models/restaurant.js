@@ -18,12 +18,22 @@ class Restaurant {
   // Description: Get all restaurants
   static async getAll(req, res) {
     const query =
-    `SELECT *,(select Array_agg(tag_restaurant.*) tag from restaurant
-    JOIN restaurant_has_tag on restaurant_id = restaurant.id
-    JOIN tag_restaurant ON tag_restaurant_id = tag_restaurant.id
-    where user_id =$1)
-    FROM restaurants_view
-    WHERE user_id = $1`; // query to get all restaurant
+    `SELECT restaurant.id,
+    restaurant.name,
+    restaurant.slug,
+    restaurant.favorite,
+    restaurant.photo_url,
+    restaurant.location,
+    to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
+    to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at,
+    (select ARRAY_AGG(tag_restaurant.*) AS tag_restaurantLabel
+    FROM restaurant
+    JOIN restaurant_has_tag ON restaurant_id = restaurant.id
+    JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id
+    where user_id = $1)
+    FROM restaurant
+    WHERE user_id = $1
+    GROUP BY restaurant.id`; // query to get all restaurant
 
     const values = [req.headers.userid];
 
