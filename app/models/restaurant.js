@@ -18,21 +18,10 @@ class Restaurant {
   // Description: Get all restaurants
   static async getAll(req, res) {
     const query =
-    `SELECT restaurant.id,
-    restaurant.name,
-    restaurant.slug,
-    restaurant.favorite,
-    restaurant.photo_url,
-    restaurant.location,
-    to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
-    to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at,
-    (select ARRAY_AGG(tag_restaurant.*) AS tag_restaurantLabel
-    FROM restaurant
-    JOIN restaurant_has_tag ON restaurant_id = restaurant.id
-    JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id
-    where user_id = $1)
-    FROM restaurant
-    WHERE user_id = $1
+    `select restaurant.*,
+    ARRAY((SELECT row_to_json(_) FROM (SELECT tag_restaurant.id, tag_restaurant.label
+    FROM tag_restaurant WHERE tag_restaurant_id = restaurant.id) AS _ )) AS Tags
+    from restaurant where user_id = $1
     GROUP BY restaurant.id`; // query to get all restaurant
 
     const values = [req.headers.userid];
@@ -50,28 +39,21 @@ class Restaurant {
   // Path: /restaurant
   // Description: Get one restaurant
   static async getOne(req, res) {
-    const query = `SELECT
-        restaurant.id,
-        restaurant.name,
-        restaurant.slug,
-        restaurant.favorite,
-        restaurant.photo_url,
-        restaurant.location,
-        restaurant.coordinate,
-        to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
-        to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at, 
-        (select ARRAY_AGG(tag_restaurant.label) tag
-        FROM restaurant
-                JOIN restaurant_has_tag on restaurant_id = restaurant.id
-                JOIN tag_restaurant ON tag_restaurant_id = tag_restaurant.id
-                where restaurant.id = $1),
-        ARRAY((SELECT row_to_json(_) FROM (SELECT meal.id, meal.name, meal.slug, meal.photo_url,
-        meal.favorite, meal.review ,meal.meal_restaurant_id, to_char(meal.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(meal.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at FROM meal WHERE meal.meal_restaurant_id = $1) _) ) AS meal,   
-        ARRAY((SELECT row_to_json(_) FROM (SELECT memento.id, memento.name, memento.content, memento.reminder,
-        memento.memento_restaurant_id, to_char(memento.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at, to_char(memento.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at FROM memento WHERE memento_restaurant_id = restaurant.id) AS _ )) AS Memento
-        FROM restaurant
-        WHERE restaurant.id = $1
-        GROUP BY restaurant.id`;
+    const query = `select restaurant.*,
+    ARRAY((SELECT row_to_json(_) FROM (SELECT tag_restaurant.id, tag_restaurant.label
+    FROM tag_restaurant WHERE tag_restaurant_id = restaurant.id) AS _ )) AS Tags,
+    ARRAY((SELECT row_to_json(_) FROM (SELECT meal.id, meal.name, meal.slug, meal.photo_url,
+    meal.favorite, meal.review ,meal.meal_restaurant_id, to_char(meal.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
+    to_char(meal.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at,
+    (select (ARRAY((SELECT row_to_json(_) FROM (SELECT tag_meal.id, tag_meal.label
+      FROM tag_meal WHERE tag_meal_id = meal.id) AS _ )))) as Tags
+    FROM meal WHERE meal.meal_restaurant_id = $1) _)) AS meal, 
+    ARRAY((SELECT row_to_json(_) FROM (SELECT memento.id, memento.name, memento.content, memento.reminder,
+    memento.memento_restaurant_id, to_char(memento.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
+    to_char(memento.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at FROM memento WHERE memento_restaurant_id = restaurant.id) AS _ )) AS Memento
+    FROM restaurant
+    WHERE restaurant.id = $1
+    GROUP BY restaurant.id`;
 
     const values = [req.headers.restaurantid];
 
