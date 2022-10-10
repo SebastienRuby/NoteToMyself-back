@@ -15,7 +15,7 @@ class User {
   static async create(username, password, email) {
     const passwordcrypt = await bcrypt.hash(password, 10);
     const result = await client.query(
-      'INSERT INTO public."user" (username, password, email) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO public.user (username, password, email) VALUES ($1, $2, $3) RETURNING *',
       [username, passwordcrypt, email]
     );
     const user = new User(result.rows[0]);
@@ -56,10 +56,26 @@ class User {
   }
 
   static async update(req, res) {
-    const passwordcrypt = await bcrypt.hash(req.body.password, 10);
+    const allowed = [
+      'username',
+      'password',
+      'dark',
+    ];
+    let params = [];
+    let setStr = '';
+    for(var key in req.body) {
+      if (allowed.some((allowedKey) => allowedKey === key)) {
+        setStr += `${key} = '${req.body[key]}',`;
+        if(key === 'password') {
+          params.push(await bcrypt.hash(req.body[key], 10));
+        } else
+          params.push[key];
+      }
+    }
+
     const query =
-      'UPDATE public.user SET username=$1, password=$2, dark=$3 WHERE id=$4 RETURNING *';
-    const values = [req.body.username, passwordcrypt, req.body.dark, req.headers.userid];
+      `UPDATE public.user SET ${setStr} WHERE id=$1 RETURNING *`;
+    const values = [req.headers.userid];
     try {
       await client.query(query, values);
       res.json({ message: `User ${req.body.username} updated`});

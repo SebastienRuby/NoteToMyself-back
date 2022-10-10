@@ -17,20 +17,13 @@ class Restaurant {
   // Path: /restaurants
   // Description: Get all restaurants
   static async getAll(req, res) {
-    const query = `SELECT restaurant.id,
-        restaurant.name,
-        restaurant.slug,
-        restaurant.favorite,
-        restaurant.photo_url,
-        restaurant.location,
-        to_char(restaurant.created_at,'dd/MM/YYYY HH24:MI:SS') AS created_at,
-        to_char(restaurant.updated_at,'dd/MM/YYYY HH24:MI:SS') AS updated_at,
-		ARRAY_AGG(tag_restaurant.label) AS tag_restaurantLabel
-        FROM restaurant
-        JOIN restaurant_has_tag ON restaurant_id = restaurant.id
-        JOIN tag_restaurant ON tag_restaurant.id = tag_restaurant_id 
-        WHERE user_id = $1
-		GROUP BY restaurant.id`; // query to get all restaurant
+    const query =
+    `SELECT *,(select Array_agg(tag_restaurant.*) tag from restaurant
+    JOIN restaurant_has_tag on restaurant_id = restaurant.id
+    JOIN tag_restaurant ON tag_restaurant_id = tag_restaurant.id
+    where user_id =$1)
+    FROM restaurants_view
+    WHERE user_id = $1`; // query to get all restaurant
 
     const values = [req.headers.userid];
 
@@ -97,7 +90,7 @@ class Restaurant {
       req.body.photo_url,
       req.body.favorite,
       req.body.comment,
-      req.headers.user_id,
+      req.headers.userid,
     ];
 
     try {
@@ -110,26 +103,33 @@ class Restaurant {
   }
 
   // Method: PATCH
-  // Path: /restaurants/:id
+  // Path: /restaurant
   // Description: Update a restaurant
 
   // a voir pour récupérer les données de l'objet pour la modification
   static async update(req, res) {
-    let date = moment().format('MM/DD/YYYY HH:mm:ss');
-    const query =
-      'UPDATE public.restaurant SET name=$1, slug=$2, location=$3, coordinate=$4, photo_url=$5, favorite=$6, comment=$7 , updated_at = $8 WHERE id=$9 RETURNING *';
-    const values = [
-      req.body.name,
-      req.body.slug,
-      req.body.location,
-      req.body.coordinate,
-      req.body.photo_url,
-      req.body.favorite,
-      req.body.comment,
-      date,
-      req.headers.id,
+    const allowed = [
+      'name',
+      'slug',
+      'location',
+      'coordinate',
+      'photo_url',
+      'favorite',
+      'comment',
     ];
+    let params = [];
+    let setStr = '';
+    let date = moment().format('MM/DD/YYYY HH:mm:ss');
 
+    for(var key in req.body) {
+      if (allowed.some((allowedKey) => allowedKey === key)) {
+        setStr += `${key} = '${req.body[key]}',`;
+        params.push[key];
+      }
+    }
+    const query =
+      `UPDATE public.restaurant SET ${setStr} updated_at =$1 WHERE id=$2 RETURNING *`;
+    const values = [date, req.headers.id];
     try {
       const result = await client.query(query, values);
       res.json(result.rows[0]);

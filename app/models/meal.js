@@ -35,19 +35,26 @@ class Meal {
   // Path: /meal
   // Description: Update a meal
   static async update(req, res) {
-    let date = moment().format('MM/DD/YYYY HH:mm:ss');
-    const query =
-      'UPDATE public.meal SET name=$1, slug=$2, photo_url=$3, favorite=$4, review=$5, meal_restaurant_id=$6, updated_at=$7 WHERE id=$8 RETURNING *';
-    const values = [
-      req.body.name,
-      req.body.slug,
-      req.body.photo_url,
-      req.body.favorite,
-      req.body.review,
-      req.body.meal_restaurant_id,
-      date,
-      req.headers.id,
+    const allowed = [
+      'name',
+      'slug',
+      'photo_url',
+      'favorite',
+      'review',
+      'meal_restaurant_id'
     ];
+    let params = [];
+    let setStr = '';
+    let date = moment().format('MM/DD/YYYY HH:mm:ss');
+    for(var key in req.body) {
+      if (allowed.some((allowedKey) => allowedKey === key)) {
+        setStr += `${key} = '${req.body[key]}',`;
+        params.push[key];
+      }
+    }
+    const query =
+    `UPDATE public.meal SET ${setStr} updated_at=$1 WHERE id=$2 RETURNING *`;
+    const values = [date, req.headers.id];
     try {
       const result = await client.query(query, values);
       res.json(result.rows[0]);

@@ -34,17 +34,25 @@ class Memento {
   // Path: /memento
   // Description: Update a memento
   static async update(req, res) {
-    let date = moment().format('MM/DD/YYYY HH:mm:ss');
-    const query =
-      'UPDATE public.memento SET name=$1, content=$2, reminder=$3, memento_restaurant_id=$4 ,updated_at = $5 WHERE id=$6 RETURNING *';
-    const values = [
-      req.body.name,
-      req.body.content,
-      req.body.reminder,
-      req.body.memento_restaurant_id,
-      date,
-      req.headers.id,
+    const allowed = [
+      'name',
+      'content',
+      'reminder',
+      'memento_restaurant_id',
     ];
+    let params = [];
+    let setStr = '';
+    let date = moment().format('MM/DD/YYYY HH:mm:ss');
+
+    for(var key in req.body) {
+      if (allowed.some((allowedKey) => allowedKey === key)) {
+        setStr += `${key} = '${req.body[key]}',`;
+        params.push[key];
+      }
+    }
+    const query =
+      `UPDATE public.memento SET ${setStr} updated_at = $1 WHERE id=$2 RETURNING *`;
+    const values = [date, req.headers.id];
     try {
       const result = await client.query(query, values);
       res.json(result.rows[0]);

@@ -24,7 +24,7 @@ const options = {
       scheme: 'basic',
     },
   },
-  swaggerUIPath: '/tata&toto', // url où se trouve la doc
+  swaggerUIPath: '/swagger', // url où se trouve la doc
   baseDir: __dirname,
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
   filesPattern: './**/*.js',
