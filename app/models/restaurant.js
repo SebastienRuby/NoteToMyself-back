@@ -97,8 +97,6 @@ class Restaurant {
   // Method: PATCH
   // Path: /restaurant
   // Description: Update a restaurant
-
-  // a voir pour récupérer les données de l'objet pour la modification
   static async update(req, res) {
     const allowed = [
       'name',
