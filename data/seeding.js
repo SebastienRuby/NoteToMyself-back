@@ -1,43 +1,45 @@
 require('dotenv').config();
-const { faker } = require("@faker-js/faker");
-const debug = require("debug")("seeding");
+const { faker } = require('@faker-js/faker');
+const debug = require('debug')('seeding');
 
-const db = require("../app/db/pg");
+const db = require('../app/db/pg');
 debug.queryCount = 0;
 
-faker.locale = "fr";
+faker.locale = 'fr';
 const NB_USERS = 1;
-const NB_RESTAURANTS = 10;
-const NB_RESTAURANTS_TAGS = 5;
-const NB_MEAL = 40;
-const NB_MEAL_TAGS = 3;
+const NB_RESTAURANTS = 50;
+const NB_RESTAURANTS_TAGS = 60;
+const NB_MEAL = 70;
+const NB_MEAL_TAGS = 90;
 const NB_MEMENTOS = 7;
 
 function pgQuoteEscape(row) {
   const newRow = {};
   Object.entries(row).forEach(([prop, value]) => {
-    if (typeof value !== "string") {
+    if (typeof value !== 'string') {
       newRow[prop] = value;
       return;
     }
+    // eslint-disable-next-line
     newRow[prop] = value.replaceAll("'", "''");
   });
   return newRow;
 }
-function string_to_slug (str) {
+function string_to_slug(str) {
   str = str.replace(/^\s+|\s+$/g, ''); // trim
   str = str.toLowerCase();
 
   // remove accents, swap ñ for n, etc
-  var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-  var to   = "aaaaeeeeiiiioooouuuunc------";
-  for (var i=0, l=from.length ; i<l ; i++) {
-      str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+  var from = 'àáäâèéëêìíïîòóöôùúüûñç·/_,:;';
+  var to = 'aaaaeeeeiiiioooouuuunc------';
+  for (var i = 0, l = from.length; i < l; i++) {
+    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
   }
 
-  str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-      .replace(/\s+/g, '-') // collapse whitespace and replace by -
-      .replace(/-+/g, '-'); // collapse dashes
+  str = str
+    .replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+    .replace(/-+/g, '-'); // collapse dashes
 
   return str;
 }
@@ -50,7 +52,7 @@ function generateUsers(nbUsers) {
       username: faker.name.firstName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      photo: faker.internet.avatar()
+      photo_url: faker.internet.avatar(),
     };
     users.push(user);
   }
@@ -64,7 +66,7 @@ async function insertUsers(users) {
       '${user.username}',
       '${user.email}',
       '${user.password}',
-      '${user.photo}'
+      '${user.photo_url}'
     )`
   );
 
@@ -74,7 +76,7 @@ async function insertUsers(users) {
       "username",
       "email",
       "password",
-      "photo"
+      "photo_url"
     )
       VALUES
     (
@@ -119,17 +121,20 @@ async function generateRestaurant(nbResto, userId) {
   const restaurants = [];
   for (let i = 0; i < nbResto; i += 1) {
     let name = `Chez ${faker.name.firstName()} ${faker.name.suffix()}`;
+    let slug = string_to_slug(name);
+    let photo_url = 'https://loremflickr.com/640/480/restaurant,food';
     let location = `${faker.address.buildingNumber()} ${faker.address.street()}, ${faker.address.city()} ${faker.address.zipCode()} France`;
-    let slug = string_to_slug(name)
+    let coordinate = '-2.333333 - 48.866667';
 
     const restaurant = {
       name,
       slug,
       comment: faker.company.catchPhrase(),
+      photo_url,
       favorite: faker.datatype.boolean(),
-      user_id:
-        userId[faker.datatype.number({ min: 0, max: userId.length - 1 })],
+      user_id: userId[faker.datatype.number({ min: 0, max: userId.length - 1 })],
       location,
+      coordinate
     };
     restaurants.push(restaurant);
   }
@@ -144,36 +149,44 @@ async function insertRestaurant(restaurants) {
                '${newRestaurant.name}',
                '${newRestaurant.slug}',
                '${newRestaurant.comment}',
+               '${newRestaurant.photo_url}',
                ${newRestaurant.favorite},
                ${newRestaurant.user_id},
-               '${newRestaurant.location}'
-           )`;
+               '${newRestaurant.location}',
+               '${newRestaurant.coordinate}'
+            )`;
   });
 
   const queryStr = `
-           INSERT INTO "restaurant"
-           (
-               "name",
-               "slug",
-               "comment",
-               "favorite",
-               "user_id",
-               "location"
-           )
-           VALUES
-           ${restaurantValues}
-           RETURNING id
-   `;
+    INSERT INTO "restaurant"
+      (
+      "name",
+      "slug",
+      "comment",
+      "photo_url",
+      "favorite",
+      "user_id",
+      "location",
+      "coordinate"
+      )
+      VALUES
+      ${restaurantValues}
+      RETURNING id
+    `;
   const result = await db.query(queryStr);
   return result.rows;
 }
 
 // Fonction de génération des tags de restaurant
-function generateTagRestaurant(nbTagRestaurant) {
+function generateTagRestaurant(nbTagRestaurant, restaurantId) {
   const tagsRestaurant = [];
   for (let i = 0; i < nbTagRestaurant; i += 1) {
     const tagRestaurant = {
       label: faker.address.country(),
+      restaurantId:
+        restaurantId[
+          faker.datatype.number({ min: 0, max: restaurantId.length - 1 })
+        ],
     };
     tagsRestaurant.push(tagRestaurant);
   }
@@ -185,14 +198,16 @@ async function insertTagRestaurant(tagsRestaurant) {
   const tagRestaurantValues = tagsRestaurant.map((tagRestaurant) => {
     const newTagRestaurant = pgQuoteEscape(tagRestaurant);
     return `(
-      '${newTagRestaurant.label}'
+      '${newTagRestaurant.label}',
+      ${newTagRestaurant.restaurantId}
     )`;
   });
 
   const queryStr = `
     INSERT INTO "tag_restaurant"
     (
-      "label"
+      "label",
+      "tag_restaurant_id"
     )
     VALUES
     ${tagRestaurantValues}
@@ -202,76 +217,21 @@ async function insertTagRestaurant(tagsRestaurant) {
   return result.rows;
 }
 
-// Liaison des tags de restaurant aux restaurants
-function generateRestaurantHasTag(restaurantIds, tagRestaurantIds) {
-  const restaurantHasTags = restaurantIds
-    .map((restaurantId) => {
-      const tagRestaurantIdsFree = [...tagRestaurantIds];
-      const nbRestaurantTag =
-        Math.min(
-          faker.datatype.number(10),
-          Math.ceil(tagRestaurantIds.length / 3)
-        ) + 1;
-      const tagsRestaurant = [];
-      for (let i = 0; i < nbRestaurantTag; i += 1) {
-        const randomTagRestaurantIndex = faker.datatype.number(
-          tagRestaurantIdsFree.length - 1
-        );
-        const tagRestaurantId = tagRestaurantIdsFree.splice(
-          randomTagRestaurantIndex,
-          1
-        )[0];
-
-        tagsRestaurant.push({
-          tagRestaurantId,
-          restaurantId,
-        });
-      }
-      return tagsRestaurant;
-    })
-    .flat();
-  return restaurantHasTags;
-}
-// Insertion des liaisons des tags de restaurant aux restaurants dans la BDD
-async function insertRestaurantHasTag(restaurantHasTags) {
-  await db.query(
-    'TRUNCATE TABLE "restaurant_has_tag" RESTART IDENTITY CASCADE'
-  );
-  const restaurantHasTagValues = restaurantHasTags.map(
-    (restaurantHasTag) => `(
-      ${restaurantHasTag.restaurantId},
-      ${restaurantHasTag.tagRestaurantId}
-    )`
-  );
-
-  const queryStr = `
-       INSERT INTO "restaurant_has_tag"
-       (
-        "restaurant_id",
-        "tag_restaurant_id"
-       )
-       VALUES
-       ${restaurantHasTagValues}
-       RETURNING id
-   `;
-  const result = await db.query(queryStr);
-  return result.rows;
-}
-
 // Fonction de génération des plats
 async function generateMeal(nbMeal, restaurantId) {
   const meals = [];
   for (let i = 0; i < nbMeal; i += 1) {
     let name = `Steak de ${faker.animal.type()}`;
-    let slug = string_to_slug(name)
+    let slug = string_to_slug(name);
+    let photo_url = 'https://loremflickr.com/640/480/food,meal';
 
     const meal = {
       name,
       slug,
-      photo: faker.image.food(),
+      photo_url,
       favorite: faker.datatype.boolean(),
       review: faker.company.catchPhrase(),
-      restaurant_id:
+      meal_restaurant_id:
         restaurantId[
           faker.datatype.number({ min: 0, max: restaurantId.length - 1 })
         ],
@@ -288,10 +248,10 @@ async function insertMeal(meals) {
     return `(
                '${newMeal.name}',
                '${newMeal.slug}',
-               '${newMeal.photo}',
+               '${newMeal.photo_url}',
                ${newMeal.favorite},
                '${newMeal.review}',
-               ${newMeal.restaurant_id}
+               ${newMeal.meal_restaurant_id}
            )`;
   });
 
@@ -300,10 +260,10 @@ async function insertMeal(meals) {
            (
                "name",
                "slug",
-               "photo",
+               "photo_url",
                "favorite",
                "review",
-               "restaurant_id"
+               "meal_restaurant_id"
            )
            VALUES
            ${mealValues}
@@ -314,11 +274,15 @@ async function insertMeal(meals) {
 }
 
 // Fonction de génération des tags de plats
-function generateTagMeal(nbMealTags) {
+function generateTagMeal(nbMealTags, mealId) {
   const mealTags = [];
   for (let i = 0; i < nbMealTags; i += 1) {
     const mealTag = {
       label: faker.word.adjective(),
+      mealId:
+      mealId[
+        faker.datatype.number({ min: 0, max: mealId.length - 1 })
+      ]
     };
     mealTags.push(mealTag);
   }
@@ -330,66 +294,20 @@ async function insertTagMeal(mealTags) {
   const mealTagsValues = mealTags.map((mealTag) => {
     const newMealTag = pgQuoteEscape(mealTag);
     return `(
-          '${newMealTag.label}'
+          '${newMealTag.label}',
+          ${newMealTag.mealId}
       )`;
   });
 
   const queryStr = `
            INSERT INTO "tag_meal"
            (
-               "label"
+               "label",
+               "tag_meal_id"
            )
            VALUES
            ${mealTagsValues}
            RETURNING id
-   `;
-  const result = await db.query(queryStr);
-  return result.rows;
-}
-
-// Liaison des tags de plat aux plats
-function generateMealHasTag(mealIds, tagMealIds) {
-  const mealHasTags = mealIds
-    .map((mealId) => {
-      const tagMealIdsFree = [...tagMealIds];
-      const nbMealTag =
-        Math.min(faker.datatype.number(10), Math.ceil(tagMealIds.length / 3)) +
-        1;
-      const tagsMeal = [];
-      for (let i = 0; i < nbMealTag; i += 1) {
-        const randomTagMealIndex = faker.datatype.number(
-          tagMealIdsFree.length - 1
-        );
-        const tagMealId = tagMealIdsFree.splice(randomTagMealIndex, 1)[0];
-
-        tagsMeal.push({
-          mealId,
-          tagMealId
-        });
-      }
-      return tagsMeal;
-    })
-    .flat();
-  return mealHasTags;
-}
-// Insertion des liaisons des tags de plat aux plats dans la BDD
-async function insertMealHasTag(mealHasTags) {
-  await db.query('TRUNCATE TABLE "meal_has_tag" RESTART IDENTITY CASCADE');
-  const mealHasTagValues = mealHasTags.map((mealHasTag) => `(
-      ${mealHasTag.mealId},
-      ${mealHasTag.tagMealId}
-    )`
-  );
-
-  const queryStr = `
-       INSERT INTO "meal_has_tag"
-       (
-        "meal_id",
-        "tag_meal_id"
-       )
-       VALUES
-       ${mealHasTagValues}
-       RETURNING id
    `;
   const result = await db.query(queryStr);
   return result.rows;
@@ -400,7 +318,8 @@ async function generateMemento(nbMemento, restaurantId) {
   const mementos = [];
   for (let i = 0; i < nbMemento; i += 1) {
     const memento = {
-      name: faker.company.catchPhrase(),
+      name: faker.hacker.noun(),
+      content: faker.hacker.phrase(),
       reminder: faker.datatype.number({ min: 0, max: 2 }),
       restaurantId:
         restaurantId[
@@ -417,9 +336,10 @@ async function insertMemento(mementos) {
   const mementoValues = mementos.map((memento) => {
     const newMemento = pgQuoteEscape(memento);
     return `(
-               '${newMemento.name}',
-               ${newMemento.reminder},
-               ${newMemento.restaurantId}
+              '${newMemento.name}',
+              '${newMemento.content}',
+              ${newMemento.reminder},
+              ${newMemento.restaurantId}
            )`;
   });
 
@@ -427,8 +347,9 @@ async function insertMemento(mementos) {
            INSERT INTO "memento"
            (
                "name",
+               "content",
                "reminder",
-               "restaurant_id"
+               "memento_restaurant_id"
            )
            VALUES
            ${mementoValues}
@@ -461,20 +382,9 @@ async function insertMemento(mementos) {
    * Génération des tags restaurant fake
    * Ajout de ces tags restaurant en BDD
    */
-  const tagsRestaurant = generateTagRestaurant(NB_RESTAURANTS_TAGS);
+  const tagsRestaurant = generateTagRestaurant(NB_RESTAURANTS_TAGS, restaurantIds);
   const insertedTagRestaurant = await insertTagRestaurant(tagsRestaurant);
   debug(`${insertedTagRestaurant.length} tag_restaurant inserted`);
-  const tagsRestaurantIds = insertedTagRestaurant.map(
-    (tagRestaurant) => tagRestaurant.id
-  );
-
-  /**
-   * Association des restaurants et des tags restaurant
-   * Ajout de ces associations en BDD
-   */
-  const restaurantHasTags = generateRestaurantHasTag(restaurantIds,tagsRestaurantIds);
-  const insertedRestaurantHasTags = await insertRestaurantHasTag(restaurantHasTags);
-  debug(`${insertedRestaurantHasTags.length} restaurant <> tag_restaurant association inserted`);
 
   /**
    * Génération des plats fake
@@ -489,18 +399,9 @@ async function insertMemento(mementos) {
    * Génération des tags meal fake
    * Ajout de ces tags meal en BDD
    */
-  const tagsMeal = generateTagMeal(NB_MEAL_TAGS);
+  const tagsMeal = generateTagMeal(NB_MEAL_TAGS, mealIds);
   const insertedTagMeal = await insertTagMeal(tagsMeal);
   debug(`${insertedTagMeal.length} tag_meal inserted`);
-  const tagsMealIds = insertedTagMeal.map((tagMeal) => tagMeal.id);
-
-  /**
-   * Association des meals et des tags meals
-   * Ajout de ces associations en BDD
-   */
-  const mealHasTags = generateMealHasTag(mealIds, tagsMealIds);
-  const insertedMealHasTags = await insertMealHasTag(mealHasTags);
-  debug(`${insertedMealHasTags.length} meal <> tag_meal association inserted`);
 
   /**
    * Génération des mementos fake
@@ -511,5 +412,4 @@ async function insertMemento(mementos) {
   debug(`${insertedMemento.length} tag_meal inserted`);
 
   db.originalClient.end();
-
 })();

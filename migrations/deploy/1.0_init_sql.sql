@@ -1,7 +1,4 @@
--- Active: 1663948777343@@127.0.0.1@5432@noteToMyself@public
--- SQLBook: Code
---- Deploy note_to_my_self:1.0_init_sql from pg
-
+-- Active: 1664437886799@@127.0.0.1@5432@note_to_my_self@public
 BEGIN;
 
 CREATE DOMAIN "email" AS text
@@ -14,37 +11,30 @@ CREATE TABLE "user" (
     "username" TEXT NOT NULL,
     "email" email NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
-    "photo" TEXT, 
-    "token" TEXT,
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "photo_url" TEXT, 
+    "dark" BOOLEAN DEFAULT FALSE,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
-
 );
 
 CREATE TABLE "restaurant" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
     "slug" TEXT,
-    "location" TEXT NOT NULL,
-    "favorite" BOOLEAN ,
+    "location" TEXT,
+    "photo_url" TEXT,
+    "favorite" BOOLEAN DEFAULT false,
+    "coordinate" TEXT,
     "comment" TEXT,
-    "user_id" INT NOT NULL REFERENCES "user" ("id"), 
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
+    "user_id" INT NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE, 
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
-
 );
 
 CREATE TABLE "tag_restaurant" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "label" text,
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
-    "updated_at" TIMESTAMPTZ
-);
-
-CREATE TABLE "restaurant_has_tag" (
-    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "tag_restaurant_id" INT NOT NULL REFERENCES "tag_restaurant" ("id"),
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"),
+    "tag_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -53,23 +43,18 @@ CREATE TABLE "meal" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
     "slug" TEXT,
-    "photo" TEXT ,
-    "favorite" BOOLEAN ,
+    "photo_url" TEXT ,
+    "favorite" BOOLEAN DEFAULT false,
     "review" TEXT,
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "meal_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id") ON DELETE CASCADE, 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
+
 CREATE TABLE "tag_meal" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "label" text,
-    "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
-    "updated_at" TIMESTAMPTZ
-);
-CREATE TABLE "meal_has_tag" (
-    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "tag_meal_id" INT NOT NULL REFERENCES "tag_meal" ("id"),
-    "meal_id" INT NOT NULL REFERENCES "meal" ("id"),
+    "tag_meal_id" INT NOT NULL REFERENCES "meal" ("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
@@ -77,9 +62,9 @@ CREATE TABLE "meal_has_tag" (
 CREATE TABLE "memento" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
-    "content" TEXT, 
-    "reminder" INT ,
-    "restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id"), 
+    "content" TEXT,
+    "reminder" INT,
+    "memento_restaurant_id" INT NOT NULL REFERENCES "restaurant" ("id") ON DELETE CASCADE, 
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
     "updated_at" TIMESTAMPTZ
 );
