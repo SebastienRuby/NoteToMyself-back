@@ -32,6 +32,7 @@ router.patch('/memento', authMiddleware.checkToken, controllerMemento.updateMeme
 router.delete('/memento', authMiddleware.checkToken, controllerMemento.deleteMemento);
 
 // Router for tags
+router.get('/tag', authMiddleware.checkToken, controllerTag.suggestTags);
 router.patch('/tag', authMiddleware.checkToken, controllerTag.updateTags);
 
 // Router for upload

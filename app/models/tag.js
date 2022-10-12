@@ -6,6 +6,21 @@ class Tag {
     this.label = obj.label;
   }
 
+  // Method: GET
+  // Path: /tag
+  // Get all tags
+  static async suggestTags(req, res) {
+    const restaurantOrMeal = req.headers.type === 'restaurant' ? 'suggested_tag_restaurant' : 'suggested_tag_meal';
+    const query = `SELECT * FROM ${restaurantOrMeal}`;
+    try {
+      const result = await client.query(query);
+      res.json(result.rows);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: err.message });
+    }
+  }
+
   // Method: PATCH
   // Path: /tag
   // Replace tags for a meal / restaurant
