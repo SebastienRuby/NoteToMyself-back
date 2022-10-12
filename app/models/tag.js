@@ -10,7 +10,6 @@ class Tag {
   // Path: /tag
   // Replace tags for a meal / restaurant
   static async setTags(req, res) {
-
     const restaurantOrMeal = req.headers.type === 'restaurant' ? 'tag_restaurant' : 'tag_meal';
     const deleteQuery = `DELETE FROM ${restaurantOrMeal} WHERE ${restaurantOrMeal}_id = $1`;
     const deleteValues = [req.headers.id];
@@ -37,7 +36,5 @@ class Tag {
       }
     }
   }
-
 }
-
 module.exports = Tag;

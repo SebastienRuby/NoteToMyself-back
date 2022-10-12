@@ -37,11 +37,12 @@ const controllerRestaurant = {
   },
 
   // Method: PATCH
-  // Path: /restaurants/:id
+  // Path: /restaurant
   // Description: Update a restaurant
   updateRestaurant: (req, res) => {
     try {
       Restaurant.update(req, res);
+      // Tag.createTagMeal(req,res);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: error.message });
