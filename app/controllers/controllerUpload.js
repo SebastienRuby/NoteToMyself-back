@@ -31,11 +31,11 @@ const controllerUpload = {
           break;
         case 'restaurant':
           query = 'UPDATE restaurant SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.headers.userid];
+          values = [photo_url, req.headers.restaurantid];
           break;
         case 'meal':
           query = 'UPDATE meal SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.headers.userid];
+          values = [photo_url, req.headers.mealid];
           break;
 
         default:
