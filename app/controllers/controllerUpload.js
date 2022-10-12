@@ -11,7 +11,7 @@ const controllerUpload = {
     const split = file.name.split('.');
     const fileExtension = split[split.length - 1];
     const fileName = file.name.replace(/\W+/, '');
-    const fileNameBis = fileName(/[.].*$/, '');
+    const fileNameBis = fileName.replace(/[.].*$/, '');
     const newfileName = `${fileNameBis}-${Date.now()}.${fileExtension}`;
 
     file.mv(`${public}/${newfileName}`, (err) => {
