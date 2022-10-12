@@ -72,7 +72,6 @@ class User {
           params.push[key];
       }
     }
-
     const query =
       `UPDATE public.user SET ${setStr} WHERE id=$1 RETURNING *`;
     const values = [req.headers.userid];

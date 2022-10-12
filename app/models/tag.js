@@ -6,69 +6,50 @@ class Tag {
     this.label = obj.label;
   }
 
-  // Method: POST
-  // Path: /tag/restaurant
-  // Create a tag for a restaurant
-  static async createTagRestaurant(req, res) {
-    const query = 'INSERT INTO tag_restaurant (label) VALUES ($1) RETURNING *'; // query to create a tag for a restaurant
-    const values = [req.body.label];
-
+  // Method: GET
+  // Path: /tag
+  // Get all tags
+  static async suggestTags(req, res) {
+    const restaurantOrMeal = req.headers.type === 'restaurant' ? 'suggested_tag_restaurant' : 'suggested_tag_meal';
+    const query = `SELECT * FROM ${restaurantOrMeal}`;
     try {
-      const result = await client.query(query, values);
-      res.json(result.rows[0]);
+      const result = await client.query(query);
+      res.json(result.rows);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
   }
 
-  // Method: DELETE
-  // Path: /tag/restaurant
-  // Delete a tag for a restaurant
-  static async deleteTagRestaurant(req, res) {
-    const query = 'DELETE FROM tag_restaurant WHERE id = $1 RETURNING *'; // query to delete a tag for a restaurant
-    const values = [req.body.id];
-
+  // Method: PATCH
+  // Path: /tag
+  // Replace tags for a meal / restaurant
+  static async setTags(req, res) {
+    const restaurantOrMeal = req.headers.type === 'restaurant' ? 'tag_restaurant' : 'tag_meal';
+    const deleteQuery = `DELETE FROM ${restaurantOrMeal} WHERE ${restaurantOrMeal}_id = $1`;
+    const deleteValues = [req.headers.id];
     try {
-      await client.query(query, values);
-      res.json('Tag delete');
+      await client.query(deleteQuery, deleteValues);
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
-  }
 
-  // Method: POST
-  // Path: /tag/restaurant
-  // Create a tag for a restaurant
-  static async createTagMeal(req, res) {
-    const query = 'INSERT INTO tag_meal (label) VALUES ($1) RETURNING *'; // query to create a tag for a restaurant
-    const values = [req.body.label];
-
-    try {
-      const result = await client.query(query, values);
-      res.json(result.rows[0]);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
-    }
-  }
-
-  // Method: DELETE
-  // Path: /tag/restaurant
-  // Delete a tag for a restaurant
-  static async deleteTagMeal(req, res) {
-    const query = 'DELETE FROM tag_meal WHERE id = $1 RETURNING *'; // query to delete a tag for a restaurant
-    const values = [req.body.id];
-
-    try {
-      await client.query(query, values);
-      res.json('Tag delete');
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: err.message });
+    if(req.body.tags.length === 0){
+      res.json('Tags deleted and no new one added');
+    } else {
+      let setStr = '';
+      req.body.tags.forEach( tag => setStr += `('${tag.label}', '${req.headers.id}'),`);
+      let setStrSliced = setStr.slice(0, -1);
+      const createQuery = `INSERT INTO ${restaurantOrMeal} (label, ${restaurantOrMeal}_id) VALUES ${setStrSliced} RETURNING *`;
+      try {
+        const result = await client.query(createQuery);
+        res.json(result.rows[0]);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+      }
     }
   }
 }
-
 module.exports = Tag;
