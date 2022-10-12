@@ -31,13 +31,8 @@ router.post('/memento', authMiddleware.checkToken, controllerMemento.createMemen
 router.patch('/memento', authMiddleware.checkToken, controllerMemento.updateMemento);
 router.delete('/memento', authMiddleware.checkToken, controllerMemento.deleteMemento);
 
-// Router for meals tags
-router.post('/tag/meal', authMiddleware.checkToken, controllerTag.createTagMeal);
-router.delete('/tag/meal', authMiddleware.checkToken, controllerTag.deleteTagMeal);
-
-// Router for restaurant tags
-router.post('/tag/restaurant', authMiddleware.checkToken, controllerTag.createTagRestaurant);
-router.delete('/tag/restaurant', authMiddleware.checkToken, controllerTag.deleteTagRestaurant);
+// Router for tags
+router.patch('/tag', authMiddleware.checkToken, controllerTag.updateTags);
 
 // Router for upload
 router.post('/upload', authMiddleware.checkToken, controllerUpload.uploadImage);
