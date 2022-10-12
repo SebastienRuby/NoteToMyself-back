@@ -1,3 +1,4 @@
+-- Active: 1664437886799@@127.0.0.1@5432@note_to_my_self@public
 BEGIN;
 
 CREATE TABLE "suggested_tag_meal" (

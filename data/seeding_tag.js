@@ -33,7 +33,7 @@ function generateSuggestedTagReso(nbTagResto) {
   return suggestedTagsRestaurant;
 }
 async function insertSuggestdTagRestaurant(suggestedTagsRestaurant) {
-  await db.querty('TRUNCATE TABLE "suggested_tag_restaurant" RESTART IDENTITY CASCADE');
+  await db.query('TRUNCATE TABLE "suggested_tag_restaurant" RESTART IDENTITY CASCADE');
   const suggestedTagRestaurantValues = suggestedTagsRestaurant.map((suggestedTagRestaurant) => {
     const newSuggestedTagRestaurant = pgQuoteEscape(suggestedTagRestaurant);
     return `('${newSuggestedTagRestaurant.label}')`;
