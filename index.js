@@ -12,32 +12,31 @@ const app = express();
 /** ********* */
 /*  SWAGGER */
 /** ******** */
-const expressJSDocSwagger = require("express-jsdoc-swagger");
+const expressJSDocSwagger = require('express-jsdoc-swagger');
 
 const options = {
-    info: {
-        version: "1.0.0",
-        title: "API Documentation",
-        license: {
-            name: "MIT",
-        },
+  info: {
+    version: '1.0.0',
+    title: 'API Documentation',
+    license: {
+      name: 'MIT',
     },
-    security: {
-        BasicAuth: {
-            type: "http",
-            scheme: "basic",
-        },
-        BearerAuth: {
-            type: "http",
-            scheme: "bearer"
-        }
+  },
+  security: {
+    BasicAuth: {
+      type: 'http',
+      scheme: 'basic',
     },
-    swaggerUIPath: "/docs", // url où se trouve la doc
-    baseDir: __dirname,
-    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-    filesPattern: "./app/router/*.js",
-    exposeSwaggerUI: true // Expose OpenAPI UI
-
+    BearerAuth: {
+      type: 'http',
+      scheme: 'bearer',
+    },
+  },
+  swaggerUIPath: '/docs', // url où se trouve la doc
+  baseDir: __dirname,
+  // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
+  filesPattern: './app/router/*.js',
+  exposeSwaggerUI: true, // Expose OpenAPI UI
 };
 expressJSDocSwagger(app)(options);
 
