@@ -1,14 +1,22 @@
 const client = require('../db/pg');
 
+/**
+ * @typedef Tag
+ * @property {string} label.required
+ */
+
 class Tag {
   constructor(obj) {
     this.id = obj.id;
     this.label = obj.label;
   }
 
-  // Method: POST
-  // Path: /tag/restaurant
-  // Create a tag for a restaurant
+  /**
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+
   static async createTagRestaurant(req, res) {
     const query = 'INSERT INTO tag_restaurant (label) VALUES ($1) RETURNING *'; // query to create a tag for a restaurant
     const values = [req.body.label];
@@ -22,9 +30,11 @@ class Tag {
     }
   }
 
-  // Method: DELETE
-  // Path: /tag/restaurant
-  // Delete a tag for a restaurant
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
   static async deleteTagRestaurant(req, res) {
     const query = 'DELETE FROM tag_restaurant WHERE id = $1 RETURNING *'; // query to delete a tag for a restaurant
     const values = [req.body.id];
@@ -38,9 +48,11 @@ class Tag {
     }
   }
 
-  // Method: POST
-  // Path: /tag/restaurant
-  // Create a tag for a restaurant
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
   static async createTagMeal(req, res) {
     const query = 'INSERT INTO tag_meal (label) VALUES ($1) RETURNING *'; // query to create a tag for a restaurant
     const values = [req.body.label];
@@ -54,9 +66,11 @@ class Tag {
     }
   }
 
-  // Method: DELETE
-  // Path: /tag/restaurant
-  // Delete a tag for a restaurant
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
   static async deleteTagMeal(req, res) {
     const query = 'DELETE FROM tag_meal WHERE id = $1 RETURNING *'; // query to delete a tag for a restaurant
     const values = [req.body.id];

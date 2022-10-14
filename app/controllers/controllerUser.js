@@ -5,6 +5,15 @@ const controllerUser = {
   // Method: POST
   // Path: /login
   // Description: login a user
+  /**
+   * 
+   * @param {*} req 
+   * @param {*} res 
+   * @param {*} next
+   * @returns {object} 200 - User logged in
+   * @returns {Error}  default - Unexpected error
+   * 
+   */
   async doLogin(req, res) {
     try {
       const user = await User.findUserByEmail(req.body.email);

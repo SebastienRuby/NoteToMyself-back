@@ -3,16 +3,43 @@ const fileUpload = require('express-fileupload');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const router = require('./app/router/router');
+const router = require('./app/router/index');
 
 const PORT = process.env.PORT || 8080;
 
 const app = express();
 
-//~ IMPORTATION SWAGGER DOCS
-import { specs, serve, setup, cssOptions} from './app/swaggerDocs/swaggerDocs.js';
-app.use('/api-docs', serve, setup(specs, cssOptions));
+/** ********* */
+/*  SWAGGER */
+/** ******** */
+const expressJSDocSwagger = require("express-jsdoc-swagger");
 
+const options = {
+    info: {
+        version: "1.0.0",
+        title: "API Documentation",
+        license: {
+            name: "MIT",
+        },
+    },
+    security: {
+        BasicAuth: {
+            type: "http",
+            scheme: "basic",
+        },
+        BearerAuth: {
+            type: "http",
+            scheme: "bearer"
+        }
+    },
+    swaggerUIPath: "/docs", // url où se trouve la doc
+    baseDir: __dirname,
+    // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
+    filesPattern: "./app/router/*.js",
+    exposeSwaggerUI: true // Expose OpenAPI UI
+
+};
+expressJSDocSwagger(app)(options);
 
 app.use(fileUpload());
 
@@ -27,7 +54,6 @@ app.use(bodyParser.json());
 
 app.use(router);
 
-// eslint-disable-next-line
-app.listen(PORT, _ => {
+app.listen(PORT, () => {
   console.log('Server started on port', PORT);
 });

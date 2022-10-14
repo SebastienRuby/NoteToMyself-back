@@ -1,7 +1,15 @@
 const path = require('path');
 const client = require('../db/pg');
 
+
 const controllerUpload = {
+  /**
+   * 
+   * @param {*} req 
+   * @param {*} res 
+   * @returns 
+   */
+  
   uploadImage: (req, res) => {
     const public = path.join(__dirname, '..', '..', 'public', 'uploads');
     if (req.files === null) {
@@ -10,7 +18,8 @@ const controllerUpload = {
     const file = req.files.file;
     const split = file.name.split('.');
     const fileExtension = split[split.length - 1];
-    const fileName = file.name.replace(/\.[^/.]+$/, '');
+    const fileName = file.name.replace(/\W+/, '');
+    const fileNameBis = fileName.replace(/[.].*$/, '');
     const newfileName = `${fileName}-${Date.now()}.${fileExtension}`;
 
     file.mv(`${public}/${newfileName}`, (err) => {
@@ -31,11 +40,11 @@ const controllerUpload = {
           break;
         case 'restaurant':
           query = 'UPDATE restaurant SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.headers.userid];
+          values = [photo_url, req.headers.restaurantid];
           break;
         case 'meal':
           query = 'UPDATE meal SET photo_url = $1 WHERE id = $2';
-          values = [photo_url, req.headers.userid];
+          values = [photo_url, req.headers.mealid];
           break;
 
         default:

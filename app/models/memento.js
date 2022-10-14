@@ -1,6 +1,14 @@
 const client = require('../db/pg');
 const moment = require('moment'); // require
 
+/**
+ * @typedef Memento
+ * @property {string} name.required
+ * @property {string} content.required
+ * @property {string} reminder.required
+ * @property {string} memento_restaurant_id.required
+ * 
+ */
 class Memento {
   constructor(obj) {
     this.id = obj.id;
@@ -10,9 +18,11 @@ class Memento {
     this.memento_restaurant_id = obj.meal_restaurant_id;
   }
 
-  // Method: POST
-  // Path: /memento
-  // Description: Create a memento
+  /**
+   * 
+   * @param {*} req 
+   * @param {*} res 
+   */
   static async create(req, res) {
     const query = 'INSERT INTO memento (name, content, reminder, memento_restaurant_id) VALUES ($1, $2, $3, $4) RETURNING *'; // query to create a memento
     const values = [
@@ -30,9 +40,11 @@ class Memento {
     }
   }
 
-  // Method: PATCH
-  // Path: /memento
-  // Description: Update a memento
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
   static async update(req, res) {
     const allowed = [
       'name',
@@ -62,9 +74,11 @@ class Memento {
     }
   }
 
-  // Method: DELETE
-  // Path: /memento
-  // Description: Delete a memento
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
   static async delete(req, res) {
     const query = 'DELETE FROM public.memento WHERE id = $1'; // query to delete a memento
     const values = [req.headers.id];
