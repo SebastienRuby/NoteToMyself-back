@@ -26,12 +26,12 @@ const controllerMemento = require('../controllers/controllerMemento');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
 /** PATCH /memento
  * @summary modifie un memento
- * @tag MEMENTO
+ * @tags MEMENTO
  * @return {object} 200 - success response - application/json
  * @return {Error}  default - Unexpected error
  * @example response - 200 - response
@@ -54,7 +54,7 @@ const controllerMemento = require('../controllers/controllerMemento');
 
 /** DELETE /memento
  * @summary supprime un memento
- * @tag MEMENTO
+ * @tags MEMENTO
  * @return {object} 200 - success response - application/json
  * @return {Error}  default - Unexpected error
  * @example response - 200 - response
@@ -75,8 +75,20 @@ const controllerMemento = require('../controllers/controllerMemento');
  * }
  */
 
-router.post('/memento', authMiddleware.checkToken, controllerMemento.createMemento);
-router.patch('/memento', authMiddleware.checkToken, controllerMemento.updateMemento);
-router.delete('/memento', authMiddleware.checkToken, controllerMemento.deleteMemento);
+router.post(
+  '/memento',
+  authMiddleware.checkToken,
+  controllerMemento.createMemento
+);
+router.patch(
+  '/memento',
+  authMiddleware.checkToken,
+  controllerMemento.updateMemento
+);
+router.delete(
+  '/memento',
+  authMiddleware.checkToken,
+  controllerMemento.deleteMemento
+);
 
 module.exports = router;

@@ -1,15 +1,14 @@
 const path = require('path');
 const client = require('../db/pg');
 
-
 const controllerUpload = {
   /**
-   * 
-   * @param {*} req 
-   * @param {*} res 
-   * @returns 
+   *
+   * @param {*} req
+   * @param {*} res
+   * @returns
    */
-  
+
   uploadImage: (req, res) => {
     const public = path.join(__dirname, '..', '..', 'public', 'uploads');
     if (req.files === null) {

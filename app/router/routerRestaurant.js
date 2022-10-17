@@ -1,7 +1,7 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
-const controllerRestaurant = require("../controllers/controllerRestaurant");
+const authMiddleware = require('../middleware/authMiddleware');
+const controllerRestaurant = require('../controllers/controllerRestaurant');
 
 /** GET /restaurants
  * @summary récupère les restaurants
@@ -36,7 +36,7 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * {
  * "error": "Bad request"
  * }
- * @example response - 401 - Unauthorized 
+ * @example response - 401 - Unauthorized
  * {
  * "error": "Unauthorized"
  * }
@@ -44,7 +44,7 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
 /** GET /restaurant
@@ -97,7 +97,7 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
 /** POST /restaurant
@@ -105,7 +105,7 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * @tags RESTAURANT
  * @return {object} 200 - success response - application/json
  * @return {Error}  default - Unexpected error
- * 
+ *
  * @example response - 200 - success response
  * {
  * "id": 1,
@@ -130,7 +130,7 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
 /** PATCH /restaurant
@@ -162,7 +162,7 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
 /** DELETE /restaurant
@@ -186,31 +186,31 @@ const controllerRestaurant = require("../controllers/controllerRestaurant");
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
 router.get(
-  "/restaurants",
+  '/restaurants',
   authMiddleware.checkToken,
   controllerRestaurant.restaurants
 );
 router.get(
-  "/restaurant",
+  '/restaurant',
   authMiddleware.checkToken,
   controllerRestaurant.restaurant
 );
 router.post(
-  "/restaurant",
+  '/restaurant',
   authMiddleware.checkToken,
   controllerRestaurant.createRestaurant
 );
 router.patch(
-  "/restaurant",
+  '/restaurant',
   authMiddleware.checkToken,
   controllerRestaurant.updateRestaurant
 );
 router.delete(
-  "/restaurant",
+  '/restaurant',
   authMiddleware.checkToken,
   controllerRestaurant.deleteRestaurant
 );

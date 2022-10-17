@@ -21,12 +21,12 @@ const controllerUpload = require('../controllers/controllerUpload');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  * @example response - 401 - Unauthorized
  * {
  * "error": "echec de l'upload"
  * }
- * 
+ *
  */
 router.post('/upload', authMiddleware.checkToken, controllerUpload.uploadImage);
 

@@ -24,10 +24,10 @@ const controllerTag = require('../controllers/controllerTag');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
- 
- /** DELETE /tag/restaurant
+
+/** DELETE /tag/restaurant
  * @summary Supprime un tag pour un restaurant
  * @tags TAG RESTAURANT
  * @return {object} 200 - success response - application/json
@@ -48,9 +48,17 @@ const controllerTag = require('../controllers/controllerTag');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
-router.post('/tag/restaurant', authMiddleware.checkToken, controllerTag.createTagRestaurant);
-router.delete('/tag/restaurant', authMiddleware.checkToken, controllerTag.deleteTagRestaurant);
+router.post(
+  '/tag/restaurant',
+  authMiddleware.checkToken,
+  controllerTag.createTagRestaurant
+);
+router.delete(
+  '/tag/restaurant',
+  authMiddleware.checkToken,
+  controllerTag.deleteTagRestaurant
+);
 
 module.exports = router;

@@ -27,7 +27,7 @@ const controllerUser = require('../controllers/controllerUser');
  * {
  * "error": "Internal server error"
  * }
-*/
+ */
 
 /** POST /login
  * @summary Login a user
@@ -56,7 +56,7 @@ const controllerUser = require('../controllers/controllerUser');
  * "error": "Internal server error"
  */
 
- /** PATCH /user
+/** PATCH /user
  * @summary Update a user
  * @tags USER
  * @return {object} 200 - User updated
@@ -82,14 +82,14 @@ const controllerUser = require('../controllers/controllerUser');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
- /** DELETE /user
+/** DELETE /user
  * @summary Delete a user
  * @tags USER
  * @return {object} 200 - User deleted
- * @return {Error}  default - Unexpected error 
+ * @return {Error}  default - Unexpected error
  * @example response - 200 - response
  * {
  * "message": "Utilisateur supprimé"

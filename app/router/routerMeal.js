@@ -39,10 +39,10 @@ const controllerMeal = require('../controllers/controllerMeal');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
- /** PATCH /meal
+/** PATCH /meal
  * @summary modifie un plat
  * @tags MEAL
  * @return {object} 200 - success response - application/json
@@ -77,10 +77,10 @@ const controllerMeal = require('../controllers/controllerMeal');
  * {
  * "error": "Internal server error"
  * }
- * 
+ *
  */
 
- /** DELETE /meal
+/** DELETE /meal
  * @summary supprime un plat
  * @tags MEAL
  * @return {object} 200 - success response - application/json
@@ -105,6 +105,5 @@ const controllerMeal = require('../controllers/controllerMeal');
 router.post('/meal', authMiddleware.checkToken, controllerMeal.createMeal);
 router.patch('/meal', authMiddleware.checkToken, controllerMeal.updateMeal);
 router.delete('/meal', authMiddleware.checkToken, controllerMeal.deleteMeal);
-
 
 module.exports = router;

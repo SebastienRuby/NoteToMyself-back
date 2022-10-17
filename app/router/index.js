@@ -10,24 +10,24 @@ const routerTagsMeal = require('./routerTagsMeal');
 const routerUpload = require('./routerUpload');
 
 // Router for user
-router.use(routerUser)
+router.use(routerUser);
 
 // Router for restaurant
-router.use(routerRestaurant)
+router.use(routerRestaurant);
 
 // Router for meal
-router.use(routerMeal)
+router.use(routerMeal);
 
 // Router for memento
-router.use(routerMemento)
+router.use(routerMemento);
 
 // Router for meals tags
-router.use(routerTagsMeal)
+router.use(routerTagsMeal);
 
 // Router for restaurant tags
-router.use(routerTagsRestaurant)
+router.use(routerTagsRestaurant);
 
 // Router for upload
-router.use(routerUpload)
+router.use(routerUpload);
 
 module.exports = router;
