@@ -3,17 +3,21 @@ const fileUpload = require('express-fileupload');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const router = require('./app/router/router');
-const expressJSDocSwagger = require('express-jsdoc-swagger');
+const router = require('./app/router/index');
 
 const PORT = process.env.PORT || 8080;
 
 const app = express();
 
+/** ********* */
+/*  SWAGGER */
+/** ******** */
+const expressJSDocSwagger = require('express-jsdoc-swagger');
+
 const options = {
   info: {
     version: '1.0.0',
-    title: 'NoteToMyself',
+    title: 'API Documentation',
     license: {
       name: 'MIT',
     },
@@ -23,14 +27,18 @@ const options = {
       type: 'http',
       scheme: 'basic',
     },
+    BearerAuth: {
+      type: 'http',
+      scheme: 'bearer',
+    },
   },
-  swaggerUIPath: '/swagger', // url où se trouve la doc
+  swaggerUIPath: '/docs', // url où se trouve la doc
   baseDir: __dirname,
   // Glob pattern to find your jsdoc files (multiple patterns can be added in an array)
-  filesPattern: './**/*.js',
+  filesPattern: './app/router/*.js',
+  exposeSwaggerUI: true, // Expose OpenAPI UI
 };
 expressJSDocSwagger(app)(options);
-
 
 app.use(fileUpload());
 
@@ -45,7 +53,6 @@ app.use(bodyParser.json());
 
 app.use(router);
 
-// eslint-disable-next-line
-app.listen(PORT, _ => {
+app.listen(PORT, () => {
   console.log('Server started on port', PORT);
 });

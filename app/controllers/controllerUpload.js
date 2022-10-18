@@ -1,6 +1,13 @@
 const path = require('path');
 
 const controllerUpload = {
+  /**
+   *
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+
   uploadImage: (req, res) => {
     const public = path.join(__dirname, '..', '..', 'public', 'uploads');
     if (req.files === null) {
@@ -22,6 +29,7 @@ const controllerUpload = {
       res.status(200).json({
         fileName: newfileName,
         filePath: `/uploads/${newfileName}`,
+
       });
     });
   },
