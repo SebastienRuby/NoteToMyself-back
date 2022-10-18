@@ -1,6 +1,14 @@
 const client = require('../db/pg');
 const moment = require('moment'); // require
 
+/**
+ * @typedef Meal
+ * @property {integer} id.required
+ * @property {string} name.required
+ * @property {string} slug.required
+ * @property {boolean} favorite.required
+ * @property {integer} meal_restaurant_id.required
+ */
 class Meal {
   constructor(obj) {
     this.id = obj.id;
@@ -9,9 +17,6 @@ class Meal {
     this.favorite = obj.favorite;
     this.meal_restaurant_id = obj.meal_restaurant_id;
   }
-  // Method: POST
-  // Path: /meal
-  // Description: Create a meal
   static async create(req, res) {
     const query = 'INSERT INTO meal (name, slug, photo_url, favorite, review, meal_restaurant_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'; // query to create a memento
     const values = [

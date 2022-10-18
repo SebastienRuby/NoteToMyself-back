@@ -30,6 +30,8 @@
     "express-jsdoc-swagger": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.5.0"
   }
 }

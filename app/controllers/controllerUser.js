@@ -5,6 +5,15 @@ const controllerUser = {
   // Method: POST
   // Path: /login
   // Description: login a user
+  /**
+   *
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @returns {object} 200 - User logged in
+   * @returns {Error}  default - Unexpected error
+   *
+   */
   async doLogin(req, res) {
     try {
       const user = await User.findUserByEmail(req.body.email);
@@ -61,13 +70,11 @@ const controllerUser = {
           process.env.JWT_SECRET,
           { expiresIn: process.env.JWT_DURING }
         );
-        res
-          .status(200)
-          .json({
-            token,
-            username: newUserLogged.username,
-            id: newUserLogged.id,
-          });
+        res.status(200).json({
+          token,
+          username: newUserLogged.username,
+          id: newUserLogged.id,
+        });
       }
     } catch (err) {
       console.error(err);

@@ -1,5 +1,10 @@
 const client = require('../db/pg');
 
+/**
+ * @typedef Tag
+ * @property {string} label.required
+ */
+
 class Tag {
   constructor(obj) {
     this.id = obj.id;
@@ -9,7 +14,14 @@ class Tag {
   // Method: GET
   // Path: /tag
   // Get all tags
+
+  /**
+  * @param {*} req
+  * @param {*} res
+  * @returns
+  */
   static async suggestTags(req, res) {
+
     const restaurantOrMeal = req.headers.type === 'restaurant' ? 'suggested_tag_restaurant' : 'suggested_tag_meal';
     const query = `SELECT * FROM ${restaurantOrMeal}`;
     try {
@@ -24,6 +36,12 @@ class Tag {
   // Method: PATCH
   // Path: /tag
   // Replace tags for a meal / restaurant
+
+  /**
+  * @param {*} req
+  * @param {*} res
+  * @returns
+  */
   static async setTags(req, res) {
     const restaurantOrMeal = req.headers.type === 'restaurant' ? 'tag_restaurant' : 'tag_meal';
     const deleteQuery = `DELETE FROM ${restaurantOrMeal} WHERE ${restaurantOrMeal}_id = $1`;
@@ -34,7 +52,6 @@ class Tag {
       console.error(err);
       res.status(500).json({ message: err.message });
     }
-
     if(req.body.tags.length === 0){
       res.json('Tags deleted and no new one added');
     } else {

@@ -1,21 +1,36 @@
 const client = require('../db/pg'); // import the client
 const moment = require('moment'); // require
 
+/**
+ * @typedef Restaurant
+ * @property {string} name.required
+ * @property {string} slug.required
+ * @property {string} photo_url.required
+ * @property {string} location.required
+ * @property {string} coordinate.required
+ * @property {boolean} favorite.required
+ * @property {string} comment.required
+ * @property {integer} user_id.required
+ */
 class Restaurant {
   constructor(obj) {
     this.id = obj.id;
     this.name = obj.name;
     this.slug = obj.slug;
     this.photo_url = obj.photo_url;
+    this.coordinate = obj.coordinate;
     this.location = obj.location;
     this.favorite = obj.favorite;
     this.comment = obj.comment;
     this.user_id = obj.user_id;
   }
 
-  // Method: GET
-  // Path: /restaurants
-  // Description: Get all restaurants
+  /**
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+
   static async getAll(req, res) {
     const query =
     `select restaurant.*,
@@ -35,9 +50,11 @@ class Restaurant {
     }
   }
 
-  // Method: GET
-  // Path: /restaurant
-  // Description: Get one restaurant
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
   static async getOne(req, res) {
     const query = `select restaurant.*,
     ARRAY((SELECT row_to_json(_) FROM (SELECT tag_restaurant.id, tag_restaurant.label
@@ -68,9 +85,11 @@ class Restaurant {
     }
   }
 
-  // Method: POST
-  // Path: /restaurants
-  // Description: Create a restaurant
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
   static async create(req, res) {
     const query =
       'INSERT INTO public.restaurant (name, slug, location, coordinate, photo_url, favorite , comment, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
@@ -94,9 +113,11 @@ class Restaurant {
     }
   }
 
-  // Method: PATCH
-  // Path: /restaurant
-  // Description: Update a restaurant
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
   static async update(req, res) {
     const allowed = [
       'name',
@@ -129,9 +150,11 @@ class Restaurant {
     }
   }
 
-  // Method: DELETE
-  // Path: /restaurant
-  // Description: Delete a restaurant
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
+ */
   static async delete(req, res) {
     const query = 'DELETE FROM public.restaurant WHERE id=$1';
     const values = [req.headers.id];
