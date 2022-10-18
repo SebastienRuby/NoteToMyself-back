@@ -28,13 +28,16 @@ const controllerUser = {
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_DURING }
           );
-          res.status(200).json({
-            token: token,
-            username: user.username,
-            email: user.email,
-            id: user.id,
-            dark: user.dark,
-          });
+          res
+            .status(200)
+            .json({
+              token: token,
+              username: user.username,
+              email: user.email,
+              id: user.id,
+              dark: user.dark,
+              photo_url: user.photo_url,
+            });
         } else {
           res.status(401).json({ message: 'Invalid password' });
         }

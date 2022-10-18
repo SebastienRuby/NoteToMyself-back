@@ -50,10 +50,10 @@ class Restaurant {
     }
   }
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
  */
   static async getOne(req, res) {
     const query = `select restaurant.*,
@@ -85,10 +85,10 @@ class Restaurant {
     }
   }
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
  */
   static async create(req, res) {
     const query =
@@ -113,10 +113,10 @@ class Restaurant {
     }
   }
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
  */
   static async update(req, res) {
     const allowed = [
@@ -150,10 +150,10 @@ class Restaurant {
     }
   }
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
+  /**
+ *
+ * @param {*} req
+ * @param {*} res
  */
   static async delete(req, res) {
     const query = 'DELETE FROM public.restaurant WHERE id=$1';

@@ -17,7 +17,6 @@ class Meal {
     this.favorite = obj.favorite;
     this.meal_restaurant_id = obj.meal_restaurant_id;
   }
-  
   static async create(req, res) {
     const query = 'INSERT INTO meal (name, slug, photo_url, favorite, review, meal_restaurant_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'; // query to create a memento
     const values = [
