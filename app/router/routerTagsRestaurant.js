@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
-const controllerTag = require('../controllers/controllerTag');
+const authMiddleware = require('../middleware/authMiddleware.js');
+const controllerTag = require('../controllers/controllerTag.js');
 
 /** POST /tag/restaurant
  * @summary Créer un tag pour un restaurant
@@ -50,15 +50,15 @@ const controllerTag = require('../controllers/controllerTag');
  * }
  *
  */
-router.post(
+router.get(
   '/tag/restaurant',
   authMiddleware.checkToken,
-  controllerTag.createTagRestaurant
+  controllerTag.suggestTags
 );
-router.delete(
+router.patch(
   '/tag/restaurant',
   authMiddleware.checkToken,
-  controllerTag.deleteTagRestaurant
+  controllerTag.updateTags
 );
 
 module.exports = router;

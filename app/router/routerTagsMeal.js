@@ -50,15 +50,15 @@ const controllerTag = require('../controllers/controllerTag');
  * "error": "Internal server error"
  * }
  */
-router.post(
+router.get(
   '/tag/meal',
   authMiddleware.checkToken,
-  controllerTag.createTagMeal
+  controllerTag.suggestTags
 );
-router.delete(
+router.patch(
   '/tag/meal',
   authMiddleware.checkToken,
-  controllerTag.deleteTagMeal
+  controllerTag.updateTags
 );
 
 module.exports = router;

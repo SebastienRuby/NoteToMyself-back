@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const routerUser = require('./routerUser');
-const routerRestaurant = require('./routerRestaurant');
-const routerMeal = require('./routerMeal');
-const routerMemento = require('./routerMemento');
-const routerTagsRestaurant = require('./routerTagsRestaurant');
-const routerTagsMeal = require('./routerTagsMeal');
-const routerUpload = require('./routerUpload');
+const routerUser = require('./routerUser.js');
+const routerRestaurant = require('./routerRestaurant.js');
+const routerMeal = require('./routerMeal.js');
+const routerMemento = require('./routerMemento.js');
+const routerTagsRestaurant = require('./routerTagsRestaurant.js');
+const routerTagsMeal = require('./routerTagsMeal.js');
+const routerUpload = require('./routerUpload.js');
 
 // Router for user
 router.use(routerUser);
