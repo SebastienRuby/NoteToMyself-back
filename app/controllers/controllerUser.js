@@ -27,6 +27,7 @@ const controllerUser = {
               email: user.email,
               id: user.id,
               dark: user.dark,
+              photo_url: user.photo_url,
             });
         } else {
           res.status(401).json({ message: 'Invalid password' });

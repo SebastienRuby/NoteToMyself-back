@@ -60,20 +60,24 @@ class User {
       'username',
       'password',
       'dark',
+      'photo_url',
     ];
-    let params = [];
     let setStr = '';
     for(var key in req.body) {
       if (allowed.some((allowedKey) => allowedKey === key)) {
-        setStr += `${key} = '${req.body[key]}',`;
         if(key === 'password') {
-          params.push(await bcrypt.hash(req.body[key], 10));
+          if (req.body.password){
+            let cryptedPassword = await bcrypt.hash(req.body.password, 10);
+            setStr += `password = '${cryptedPassword}',`;
+          }
         } else
-          params.push[key];
+          setStr += `${key} = '${req.body[key]}',`;
       }
     }
+
+    let setStrSliced = setStr.slice(0, -1);
     const query =
-      `UPDATE public.user SET ${setStr} WHERE id=$1 RETURNING *`;
+      `UPDATE public.user SET ${setStrSliced} WHERE id=$1 RETURNING *`;
     const values = [req.headers.userid];
     try {
       await client.query(query, values);
